@@ -21,6 +21,7 @@
 		2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */; };
 		2111203F1E81CADC00E7DC29 /* MZSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111203D1E81CADC00E7DC29 /* MZSelectorView.m */; };
 		211120441E81CAE900E7DC29 /* MZSelectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */; };
+		2111204A1E81CEEB00E7DC29 /* MZSelectorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120491E81CEEB00E7DC29 /* MZSelectorItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,8 @@
 		211120411E81CAE900E7DC29 /* MZSelectorViewItem_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem_p.h; path = Item/MZSelectorViewItem_p.h; sourceTree = "<group>"; };
 		211120421E81CAE900E7DC29 /* MZSelectorViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem.h; path = Item/MZSelectorViewItem.h; sourceTree = "<group>"; };
 		211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewItem.m; path = Item/MZSelectorViewItem.m; sourceTree = "<group>"; };
+		211120481E81CEEB00E7DC29 /* MZSelectorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorItem.h; path = Selector/MZSelectorItem.h; sourceTree = "<group>"; };
+		211120491E81CEEB00E7DC29 /* MZSelectorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorItem.m; path = Selector/MZSelectorItem.m; sourceTree = "<group>"; };
 		3E3A25A0D859CDF0BE669028 /* Pods-MZSelectorView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.debug.xcconfig"; sourceTree = "<group>"; };
 		B4070D57412E3024C622CBD2 /* libPods-MZSelectorView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MZSelectorView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBE24617E00AA956B8E88BD9 /* Pods-MZSelectorView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.release.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.release.xcconfig"; sourceTree = "<group>"; };
@@ -181,9 +184,11 @@
 		211120381E81CAD200E7DC29 /* Selector */ = {
 			isa = PBXGroup;
 			children = (
+				2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */,
 				211120391E81CADC00E7DC29 /* MZScrollInfo.h */,
 				2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */,
-				2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */,
+				211120481E81CEEB00E7DC29 /* MZSelectorItem.h */,
+				211120491E81CEEB00E7DC29 /* MZSelectorItem.m */,
 				2111203C1E81CADC00E7DC29 /* MZSelectorView.h */,
 				2111203D1E81CADC00E7DC29 /* MZSelectorView.m */,
 			);
@@ -410,6 +415,7 @@
 				211120301E81CA8800E7DC29 /* MZSelectorViewController.m in Sources */,
 				211120361E81CACD00E7DC29 /* CALayer+Anchor.m in Sources */,
 				2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */,
+				2111204A1E81CEEB00E7DC29 /* MZSelectorItem.m in Sources */,
 				21111FFD1E81C96900E7DC29 /* main.m in Sources */,
 				211120371E81CACD00E7DC29 /* UIView+UserInteraction.m in Sources */,
 			);
