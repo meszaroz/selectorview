@@ -16,22 +16,22 @@
 @required
 
 - (NSUInteger)numberOfItemsInSelectorView:(MZSelectorView * _Nonnull)selectorView;
-- (MZSelectorViewItem * _Nonnull)selectorView:(MZSelectorView * _Nonnull)selectorView itemAtIndex:(NSUInteger)index;
+- (MZSelectorViewItem * _Nonnull)selectorView:(MZSelectorView * _Nonnull)selectorView viewItemAtIndex:(NSUInteger)index;
 
 @end
 
 @protocol MZSelectorViewDelegate<NSObject>
 
 @optional
-/*
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willDisplayItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index;
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didEndDisplayingItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index;
-*/
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willActivateItemAtIndex:(NSUInteger)index;
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willDeactivateItemAtIndex:(NSUInteger)index;
 
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didActivateItemAtIndex:(NSUInteger)index;
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didDeactivateItemAtIndex:(NSUInteger)index;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willDisplayViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didEndDisplayingViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index;
+
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willActivateViewItemAtIndex:(NSUInteger)index;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView willDeactivateViewItemAtIndex:(NSUInteger)index;
+
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didActivateViewItemAtIndex:(NSUInteger)index;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView didDeactivateViewItemAtIndex:(NSUInteger)index;
 
 @end
 
@@ -44,7 +44,7 @@
 - (CGFloat)   topInsetInSelectorView:(MZSelectorView * _Nonnull)selectorView;
 - (CGFloat)bottomInsetInSelectorView:(MZSelectorView * _Nonnull)selectorView;
 
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformItemContentView:(UIView * _Nonnull)view atIndex:(NSUInteger)index andPoint:(CGPoint)point;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformViewItemContentView:(UIView * _Nonnull)view atIndex:(NSUInteger)index andPoint:(CGPoint)point;
 
 @end
 
@@ -56,17 +56,19 @@
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegate      > delegate;
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegateLayout> layout;
 
-@property (strong, nonatomic, readonly, nullable) MZSelectorViewItem *activeItem;
-@property (nonatomic, readonly) NSUInteger numberOfItems;
-@property (nonatomic, readonly) CGFloat minimalItemDistance;
+@property (strong, nonatomic, readonly, nullable)         MZSelectorViewItem    *activeViewItem;
+@property (strong, nonatomic, readonly, nonnull ) NSArray<MZSelectorViewItem *> *displayingViewItems;
+
+@property (nonatomic, readonly) NSUInteger   numberOfItems;
+@property (nonatomic, readonly) CGFloat      minimalItemDistance;
 @property (nonatomic, readonly) UIEdgeInsets itemInsets;
 
-- (BOOL)activateItemAtIndex:(NSUInteger)index;
-- (BOOL)deactivateActiveItem;
+- (BOOL)activateViewItemAtIndex:(NSUInteger)index;
+- (BOOL)deactivateActiveViewItem;
 
-- (nullable __kindof MZSelectorViewItem *)itemAtIndex:(NSUInteger)index;
+- (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index;
 
-- (CGPoint)originOfItem:(MZSelectorViewItem * _Nonnull)item;
+- (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)viewItem;
 
 - (void)reloadData;
 
