@@ -21,6 +21,16 @@
 
 @end
 
+@interface MZScrollInfoData(Logic)
+
+- (CGPoint)absolutePositionInScrollContentOfScrollViewRelativePosition:(CGPoint)position;
+- (CGPoint)relativePositionInScrollContentOfScrollViewRelativePosition:(CGPoint)position;
+- (CGPoint)relativePositionInScrollContentOfAbsolutePositionInScrollContent:(CGPoint)position;
+- (CGPoint)relativePositionInScrollViewOfAbsolutePositionInScrollContent:(CGPoint)position;
+- (CGPoint)contentOffsetOfRelativeScrollViewPosition:(CGPoint)relViewPosition inRelationToAbsolutePositionInScrollContent:(CGPoint)absContentPosition;
+
+@end
+
 @interface MZScrollInfo : NSObject {
     NSDictionary<NSNumber*, MZScrollInfoData*> *_data;
 }
@@ -45,22 +55,5 @@
 - (void)registerDefaultObserversForScrollView:(UIScrollView*)scrollView;
 - (void)deregisterDefaultObserversForScrollView:(UIScrollView*)scrollView;
 
-@end
-
-@interface MZSCrollInfoHandler : NSObject
-
-+ (CGPoint)relativePositionOfPointInScrollViewContent:(CGPoint)point
-                                             fromInfo:(MZScrollInfo*)info
-                              forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-+ (CGPoint)relativeScreenPositionOfPointInScrollViewContent:(CGPoint)point
-                                                   fromInfo:(MZScrollInfo*)info
-                                    forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-+ (CGPoint)pointInScrollViewContentFromRelativePosition:(CGPoint)point
-                                               fromInfo:(MZScrollInfo*)info
-                                forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-+ (CGPoint)contentOffsetOfRelativeScreenPosition:(CGPoint)position
-            inRelationToPointInScrollViewContent:(CGPoint)point
-                                        fromInfo:(MZScrollInfo*)info
-                         forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 @end
 

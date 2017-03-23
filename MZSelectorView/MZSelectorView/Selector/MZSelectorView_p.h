@@ -13,7 +13,5 @@
 
 @interface MZSelectorView(Private)
 
-- (void)setActiveViewItem:(MZSelectorViewItem*)activeViewItem;
-
 @end
 

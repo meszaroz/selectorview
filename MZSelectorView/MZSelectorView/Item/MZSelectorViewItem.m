@@ -73,7 +73,6 @@
             
             lastAnchorPoint = _activeView.layer.anchorPoint;
             [_activeView.layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.5)];
-            _selectorView.activeViewItem = self;
             [_selectorView.superview addSubview:_activeView];
             [_activeView autoPinEdgesToSuperviewEdges];
             
@@ -84,8 +83,6 @@
             
             _contentView = _activeView;
             _activeView = nil;
-            
-            _selectorView.activeViewItem = nil;
             [self addSubview:_contentView];
             _contentView.translatesAutoresizingMaskIntoConstraints = YES;
             [_contentView.layer setCorrectedAnchorPoint:lastAnchorPoint];

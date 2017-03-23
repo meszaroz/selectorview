@@ -70,6 +70,6 @@
 
 - (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)viewItem;
 
-- (void)reloadData;
+- (BOOL)reloadData;
 
 @end

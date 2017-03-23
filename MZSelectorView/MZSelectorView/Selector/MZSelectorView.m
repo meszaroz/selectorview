@@ -15,14 +15,28 @@
 #import "MZScrollInfo.h"
 #import "CALayer+Anchor.h"
 
+@interface NSArray(Item)
+
+- (MZSelectorItem*)selectedItem;
+- (MZSelectorItem*)activeItem;
+- (NSUInteger)indexOfSelectedItem;
+- (NSUInteger)indexOfActiveItem;
+
+@end
+
 @interface MZSelectorView(ResetClear)
 
+- (void)reloadAllItems;
 - (void)clearAllItems;
+- (BOOL)prepareAllItems;
+
 - (void)resetAllItems;
 - (void)resetItems:(NSArray<MZSelectorItem*>*)items;
 - (void)resetContentOffset;
 - (void)resetAllItemTransforms;
+- (void)resetDisplayingItemTransforms;
 - (void)resetItemTransforms:(NSArray<MZSelectorItem*>*)items;
+- (void)resetItemTransform:(MZSelectorItem*)item;
 
 @end
 
@@ -68,28 +82,32 @@
 - (BOOL)transformAllItems;
 - (BOOL)transformDisplayingItems;
 - (BOOL)transformItems:(NSArray<MZSelectorItem*>*)items;
-- (BOOL)transformItem:(MZSelectorViewItem*)item atPoint:(CGPoint)point;
+- (BOOL)transformItem:(MZSelectorItem*)item;
 
 @end
 
-@interface MZSelectorView(Position)
+@interface MZSelectorView(Layout)
 
-- (BOOL)positionAllItems;
-- (BOOL)positionDisplayingItems;
-- (BOOL)positionItems:(NSArray<MZSelectorItem*>*)items;
+- (BOOL)layoutAllItems;
+- (BOOL)layoutDisplayingItems;
+- (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items;
+- (void)layoutViews;
+
+- (void)calculateDimensions;
+- (void)calculateAndUpdateContentHeight;
+- (BOOL)calculateItemOrigins;
+
+- (void)updateLayout;
+- (void)adjustContentOffset;
 
 @end
 
 
 @interface MZSelectorView () <UIScrollViewDelegate, MZSelectorItemDelegate> {
     UIView *_contentView;
-    
     NSLayoutConstraint *_contentConstraintHeight;
-    
     NSMutableArray<MZSelectorItem *> *_items;
-    
     MZScrollInfo *_scrollInfo;
-    
     UITapGestureRecognizer *_tapGestureRecognizer;
 }
 @end
@@ -127,6 +145,13 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - functions
+- (MZSelectorViewItem*)activeViewItem {
+    MZSelectorItem *item = _items ?
+        [_items activeItem] :
+        nil;
+    return item ? item.item : nil;
+}
+
 - (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)item {
     NSInteger index = [self indexOfViewItem:item];
     return index != NSNotFound ?
@@ -135,16 +160,10 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index {
-    MZSelectorViewItem *out = nil;
-    
-    if (index < self.numberOfItems) {
-        if (_items.count < index) {
-            [self prepareItems];
-        }
-        out = _items[index].item;
-    }
-    
-    return out;
+    NSUInteger numberOfItems = self.numberOfItems;
+    return index < numberOfItems && _items.count == numberOfItems ?
+        _items[index].item :
+        nil;
 }
 
 - (NSUInteger)indexOfViewItem:(MZSelectorViewItem * _Nonnull)item {
@@ -211,74 +230,25 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - configure
-- (void)reloadData {
-    [self clearAllItems      ];
-    [self prepareItems       ];
-    [self calculatePositions ];
-    [self adjustContentOffset];
-    [self setupItems         ];
-    
-    [self scrollViewDidScroll:_scrollView];
-}
-
-- (BOOL)prepareItems {
-    BOOL out = _items.count == 0;
+- (BOOL)reloadData {
+    BOOL out = !_items || ![_items activeItem]; /* reload only if idle */
     if (out) {
-        NSUInteger numberOfItems = self.numberOfItems;
-        for (NSUInteger i = 0; i < numberOfItems; ++i) {
-            [_items addObject:[MZSelectorItem itemWithDelegate:self]];
-        }
+        [self reloadAllItems];
+        [self reloadView    ];
+        /* ToDo: try to adjust content offset */
     }
     return out;
 }
 
-- (void)calculatePositions {
-    [self updateLayout];
-    
-    [self calculateAndUpdateContentHeight];
-    [self calculateItemOrigins           ];
-}
-
-- (void)calculateAndUpdateContentHeight {
-    [self setContentHeight:MAX(self.bounds.size.height,
-                               self.adjustedContentHeight)];
-}
-
-- (BOOL)calculateItemOrigins {
-    NSUInteger numberOfItems = self.numberOfItems;
-    CGFloat itemDistance  = self.adjustedItemDistance;
-    CGFloat y = self.itemInsets.top;
-    
-    BOOL out = numberOfItems > 0 && itemDistance > 0.1;
-    
-    for (NSUInteger i = 0; i < numberOfItems; ++i) {
-        y += i == 0 ? 0 : itemDistance;
-        _items[i].origin = CGPointMake(0,out ? y : 0);
-    }
-    
-    return out;
-}
-
-/* ToDo */
-- (void)adjustContentOffset {
-}
-
-- (void)setupItems {
-    [self positionAllItems      ]; /* ToDo: loades all items -> no lazy load */
+- (void)reloadView {
     [self resetAllItemTransforms];
-    [self transformAllItems     ];
-}
-
-- (void)updateLayout {
-    UIView *view = self.superview ?
-        self.superview :
-        self;
-    [view layoutIfNeeded];
+    [self updateLayout          ];
+    [self scrollViewDidScroll:_scrollView];
 }
 
 #pragma mark - view item activation/deactivation
 - (BOOL)activateViewItemAtIndex:(NSUInteger)index {
-    BOOL out = self.superview && !_activeViewItem && index < _items.count;
+    BOOL out = self.superview && ![_items activeItem] && index < _items.count;
     
     if (out) {
         _scrollView.scrollEnabled = NO;
@@ -295,7 +265,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         
         [UIView animateWithDuration:kDefaultAnimationDuration
                          animations:^{
-                             [self repositionItemsAroundActiveViewItem:item];
+                             [self resetItemTransform:_items[index]];
+                             [self updateLayout];
                          }
                          completion:^(BOOL finished) {
                              item.active = YES;
@@ -310,35 +281,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return out;
 }
 
-- (void)repositionItemsAroundActiveViewItem:(MZSelectorViewItem*)item {
-    NSUInteger index = [self indexOfViewItem:item];
-    
-    if (index != NSNotFound) {
-        NSMutableArray<MZSelectorViewItem*> *prevItems = [NSMutableArray array];
-        NSMutableArray<MZSelectorViewItem*> *nextItems = [NSMutableArray array];
-        
-        for (NSUInteger i = 0; i < _items.count; ++i) {
-            /**/ if (i < index) { [prevItems addObject:_items[i].item]; }
-            else if (i > index) { [nextItems addObject:_items[i].item]; }
-        }
-        
-        CGFloat prevOffset = [item convertPoint:item.bounds.origin toView:self].y;
-        CGFloat nextOffset = nextItems.count > 0 ?
-            self.bounds.size.height - [item convertPoint:nextItems.firstObject.bounds.origin toView:self].y:
-            0;
-        
-        /* reposition effected items */
-        for (MZSelectorViewItem *item in prevItems) { item.layer.position = CGPointMake(item.layer.position.x, item.layer.position.y - prevOffset); }
-        for (MZSelectorViewItem *item in nextItems) { item.layer.position = CGPointMake(item.layer.position.x, item.layer.position.y + nextOffset); }
-        
-        /* resize active item */
-        item.frame = CGRectMake(0, _scrollView.contentOffset.y, self.bounds.size.width, self.bounds.size.height);
-        item.contentView.layer.transform = CATransform3DIdentity;
-    }
-}
-
 - (BOOL)deactivateActiveViewItem {
-    return [self deactivateViewItemAtIndex:[self indexOfViewItem:_activeViewItem]];
+    return [self deactivateViewItemAtIndex:[_items indexOfActiveItem]];
 }
 
 - (BOOL)deactivateViewItemAtIndex:(NSUInteger)index {
@@ -352,15 +296,18 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
             [_delegate selectorView:self willDeactivateViewItemAtIndex:index];
         }
         
+        /* ToDo: reapply transform for other views */
+        
         MZSelectorViewItem *item = _items[index].item;
-        item.active = NO;
+        item.active   = NO;
+        item.selected = NO;
 
         [UIView animateWithDuration:kDefaultAnimationDuration
                          animations:^{
-                             [self setupItems];
+                             [self updateLayout];
+                             [self transformItem:_items[index]];
                          }
                          completion:^(BOOL finished) {
-                             item.selected = NO;
                              _scrollView.scrollEnabled = YES;
                              [displayLink invalidate];
                              
@@ -374,7 +321,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (BOOL)isItemActiveAtIndex:(NSUInteger)index {
-    return _activeViewItem && index < _items.count && _items[index].item == _activeViewItem && _activeViewItem.isActive;
+    return index < _items.count && _items[index].item.active;
 }
 
 - (void)updateFrame:(CADisplayLink*)displayLink {
@@ -383,7 +330,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self checkItemDisplayingStates];
-    [self transformDisplayingItems];
+    [self transformAllItems ];
 }
 
 - (void)checkItemDisplayingStates {
@@ -399,79 +346,44 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     /* execute only once */
     if (_scrollInfo.activeInterfaceOrientation != [[UIApplication sharedApplication] statusBarOrientation]) {
-        /* 1. layout items without reloading them */
-        [self resetLayout];
+        /* 1. calculate relative scroll positions for restoring after ex. rotation
+         * -   active: returns relative location on screen         -> position before activation (relative to screen)
+         * - inactive: returns relative location in scroll content -> position in center of visible content */
+        CGPoint scrollPosition = [self referenceRelativeScrollPosition];
         
-        /* 2. reposition items after rotation
-         * -   active: move inactive items offscreen like on previous orientation
-         * - inactive: do nothing */
-        [self repositionItemsAroundActiveViewItem:_activeViewItem];
+        /* 2. calculate content height and origins - needed before scroll position adjusting, because it uses the info of the new positions */
+        [self calculateDimensions];
         
-        /* 3. update scroll info orientation info after layout, so that the scroll change can be fixed */
+        /* 3. adjust scroll positions for changed layout */
+        [self adjustScrollPositionToReferenceRelativeScrollViewPosition:scrollPosition];
+        
+        /* 4. reload view - must be called after setting the content offset, because frame position uses the info */
+        [self reloadView];
+        
+        /* 5. update scroll info orientation info after layout, so that the scroll change can be fixed */
         [_scrollInfo updateInterfaceOrientation];
     }
 }
 
-- (void)resetLayout {
-    /* 1. calculate relative scroll positions for restoring after ex. rotation
-     * -   active: returns relative location on screen         -> position before activation (relative to screen)
-     * - inactive: returns relative location in scroll content -> position in center of visible content */
-    CGPoint scrollPosition = [self referenceRelativeScrollPosition];
-    
-    /* 2. apply identity transform -> layout can be performed only if no 3D transform is applied to the layer */
-    [self resetAllItemTransforms];
-    
-    /* 3. recalculate positions (min. view distances can be different for different orientations) -> ex. rotation */
-    [self calculatePositions    ];
-    
-    /* 4. position items and execute transform */
-    [self setupItems            ];
-    
-    /* 5. adjust scroll positions for changed layout */
-    [self adjustScrollPositionToReferenceRelativeScrollPosition:scrollPosition];
-}
-
 #pragma mark - adjust scroll positions for layout
 - (CGPoint)referenceRelativeScrollPosition {
-    CGPoint out = CGPointZero;
+    MZScrollInfoData *data = _scrollInfo.data[@(_scrollInfo.activeInterfaceOrientation)];
+    NSUInteger index = [_items indexOfActiveItem];
     
-    UIInterfaceOrientation interfaceOrientation = _scrollInfo.activeInterfaceOrientation;
-    NSUInteger index = [self indexOfViewItem:_activeViewItem];
-    /* active */
-    if (index != NSNotFound) {
-        out = [MZSCrollInfoHandler relativeScreenPositionOfPointInScrollViewContent:_items[index].origin
-                                                                           fromInfo:_scrollInfo
-                                                            forInterfaceOrientation:interfaceOrientation];
-    }
-    /* inactive */
-    else {
-        MZScrollInfoData *data = _scrollInfo.data[@(_scrollInfo.activeInterfaceOrientation)];
-        out = [MZSCrollInfoHandler relativePositionOfPointInScrollViewContent:CGPointMake(0.0, data.contentOffset.y + data.viewSize.height / 2)
-                                                                     fromInfo:_scrollInfo
-                                                      forInterfaceOrientation:interfaceOrientation];
-    }
-    
-    return out;
+    return index != NSNotFound ?
+        [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:_items[index].origin]: /* active */
+        [data relativePositionInScrollContentOfScrollViewRelativePosition:CGPointMake(0.0, 0.5)];  /* inactive */
 }
 
-- (void)adjustScrollPositionToReferenceRelativeScrollPosition:(CGPoint)position {
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    NSUInteger index = [self indexOfViewItem:_activeViewItem];
-    /* active */
-    if (index != NSNotFound) {
-        _scrollView.contentOffset = [MZSCrollInfoHandler contentOffsetOfRelativeScreenPosition:position
-                                                          inRelationToPointInScrollViewContent:_items[index].origin
-                                                                                      fromInfo:_scrollInfo
-                                                                       forInterfaceOrientation:interfaceOrientation];
-    }
-    /* inactive */
-    else {
-        MZScrollInfoData *data = _scrollInfo.data[@(interfaceOrientation)];
-        _scrollView.contentOffset = [MZSCrollInfoHandler contentOffsetOfRelativeScreenPosition:CGPointMake(0.0, 0.5)
-                                                          inRelationToPointInScrollViewContent:CGPointMake(0.0, data.contentSize.height * position.y)
-                                                                                      fromInfo:_scrollInfo
-                                                                       forInterfaceOrientation:interfaceOrientation];
-    }
+- (void)adjustScrollPositionToReferenceRelativeScrollViewPosition:(CGPoint)position {
+    MZScrollInfoData *data = _scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
+    NSUInteger index = [_items indexOfActiveItem];
+    
+    _scrollView.contentOffset = index != NSNotFound ?
+        [data contentOffsetOfRelativeScrollViewPosition:position                 /* active */
+            inRelationToAbsolutePositionInScrollContent:_items[index].origin] :
+        [data contentOffsetOfRelativeScrollViewPosition:CGPointMake(0.0, 0.5)    /* inactive */
+            inRelationToAbsolutePositionInScrollContent:CGPointMake(0.0, data.contentSize.height * position.y)];
 }
 
 #pragma mark - tap
@@ -491,6 +403,34 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     if (index != NSNotFound) {
         [self activateViewItemAtIndex:index];
     }
+}
+
+@end
+
+@implementation NSArray(Item)
+
+- (MZSelectorItem*)selectedItem {
+    NSUInteger index = [self indexOfSelectedItem];
+    return index != NSNotFound ? self[index] : nil;
+}
+
+- (MZSelectorItem*)activeItem {
+    NSUInteger index = [self indexOfActiveItem];
+    return index != NSNotFound ? self[index] : nil;
+}
+
+- (NSUInteger)indexOfSelectedItem {
+    return [self indexOfItemWithBlock:^BOOL(MZSelectorViewItem *viewItem) { return viewItem.isSelected; }];
+}
+
+- (NSUInteger)indexOfActiveItem {
+    return [self indexOfItemWithBlock:^BOOL(MZSelectorViewItem *viewItem) { return viewItem.isActive;   }];
+}
+
+- (NSUInteger)indexOfItemWithBlock:(BOOL(^)(MZSelectorViewItem* viewItem))block {
+    return [self indexOfObjectPassingTest:^BOOL(MZSelectorItem*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return block && obj.hasItem && block(obj.item);
+    }];
 }
 
 @end
@@ -646,49 +586,150 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (BOOL)transformItems:(NSArray<MZSelectorItem*>*)items {
     BOOL out = items.count > 0;
     for (NSUInteger i = 0; out && i < items.count; ++i) {
-        if (items[i].hasItem) {
-            MZSelectorViewItem *item = items[i].item;
-            out &= [self transformItem:item atPoint:[self originOfViewItem:item]];
-        }
+        out &= [self transformItem:items[i]];
     }
     return out;
 }
 
-- (BOOL)transformItem:(MZSelectorViewItem*)item atPoint:(CGPoint)point {
-    BOOL out = item
+- (BOOL)transformItem:(MZSelectorItem*)item {
+    BOOL out = item && item.hasItem
         && _layout && [_layout respondsToSelector:@selector(selectorView:transformViewItemContentView:atIndex:andPoint:)];
     if (out) {
         [_layout selectorView:self
-     transformViewItemContentView:item.contentView
-                      atIndex:[self indexOfViewItem:item]
-                     andPoint:point];
+ transformViewItemContentView:item.item.contentView
+                      atIndex:[_items indexOfObject:item]
+                     andPoint:item.origin];
     }
     return out;
 }
 
 @end
 
-@implementation MZSelectorView(Position)
+@implementation MZSelectorView(Layout)
 
-- (BOOL)positionAllItems {
-    return [self positionItems:_items];
+- (BOOL)layoutAllItems {
+    return [self layoutItems:_items];
 }
 
-- (BOOL)positionDisplayingItems {
-    return [self positionItems:[self displayingItems]];
+- (BOOL)layoutDisplayingItems {
+    return [self layoutItems:[self displayingItems]];
 }
 
-- (BOOL)positionItems:(NSArray<MZSelectorItem*>*)items {
+- (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items {
     BOOL out = !CGSizeEqualToSize(self.bounds.size, CGSizeZero);
     if (out) {
+        NSArray<NSValue*> *frames = self.calculatedFrames;
         for (NSUInteger i = 0; i < items.count; ++i) {
-            items[i].item.frame = CGRectMake(items[i].origin.x,
-                                             items[i].origin.y,
-                                             self.bounds.size.width,
-                                             self.bounds.size.height);
+            NSUInteger index = [_items indexOfObject:items[i]];
+            if (index != NSNotFound && index < frames.count/* && [items[i] hasItem]*/) {
+                items[i].item.frame = frames[index].CGRectValue;
+            }
         }
     }
     return out;
+}
+
+/* ToDo */
+- (void)adjustContentOffset {
+}
+
+- (void)updateLayout {
+    [self calculateDimensions     ];
+    [self calculateAndUpdateFrames];
+    [self layoutViews             ];
+}
+
+- (void)calculateDimensions {
+    [self calculateAndUpdateContentHeight];
+    [self calculateItemOrigins           ];
+}
+
+- (void)calculateAndUpdateContentHeight {
+    self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
+    [self layoutViews];
+}
+
+- (BOOL)calculateItemOrigins {
+    NSUInteger numberOfItems = self.numberOfItems;
+    CGFloat itemDistance  = self.adjustedItemDistance;
+    CGFloat y = self.itemInsets.top;
+    
+    BOOL out = numberOfItems > 0 && itemDistance > 0.1;
+    
+    for (NSUInteger i = 0; i < numberOfItems; ++i) {
+        y += i == 0 ? 0 : itemDistance;
+        _items[i].origin = CGPointMake(0,out ? y : 0);
+    }
+    
+    return out;
+}
+
+- (void)calculateAndUpdateFrames {
+    [self layoutAllItems];
+}
+
+- (NSArray<NSValue*>*)calculatedFrames {
+    NSMutableArray<NSValue*> *out = [NSMutableArray array];
+    
+    NSUInteger      selectedIndex = [_items indexOfSelectedItem];
+    MZSelectorItem *selectedItem  = [_items selectedItem       ];
+    
+    NSMutableArray<MZSelectorItem*> *prevItems = [NSMutableArray array];
+    NSMutableArray<MZSelectorItem*> *nextItems = [NSMutableArray array];
+    
+    for (NSUInteger i = 0; i < _items.count; ++i) {
+        /**/ if (i < selectedIndex) { [prevItems addObject:_items[i]]; }
+        else if (i > selectedIndex) { [nextItems addObject:_items[i]]; }
+    }
+    
+    CGFloat prevOffset = 0.0;
+    CGFloat nextOffset = 0.0;
+    
+    if (selectedItem) {
+        MZSelectorViewItem * selectedViewItem = selectedItem.item;
+        MZSelectorViewItem *firstNextViewItem = nextItems.count > 0 && nextItems.firstObject.hasItem ?
+            nextItems.firstObject.item :
+            nil;
+        
+        prevOffset = [selectedViewItem convertPoint:selectedViewItem.bounds.origin toView:self].y;
+        nextOffset = firstNextViewItem ?
+            self.bounds.size.height - [selectedViewItem convertPoint:firstNextViewItem.bounds.origin toView:self].y :
+            0;
+    }
+    
+    /* previous */
+    for (MZSelectorItem *item in prevItems) {
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.origin.x,
+                                                           item.origin.y - prevOffset,
+                                                           self.bounds.size.width,
+                                                           self.bounds.size.height)]];
+    }
+    
+    /* selected */
+    if (selectedItem) {
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(0.0,
+                                                           _scrollView.contentOffset.y,
+                                                           self.bounds.size.width,
+                                                           self.bounds.size.height)]];
+    }
+    
+    /* next */
+    for (MZSelectorItem *item in nextItems) {
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.origin.x,
+                                                           item.origin.y + nextOffset,
+                                                           self.bounds.size.width,
+                                                           self.bounds.size.height)]];
+    }
+    
+    return out;
+}
+
+- (void)layoutViews {
+    UIView *view = self.superview ?
+        self.superview :
+        self;
+    
+    [view layoutIfNeeded];
 }
 
 @end
@@ -708,7 +749,7 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 
 - (CGRect)currentFrameForEdgeOffset:(CGFloat)offset {
     return CGRectMake(0,
-                      self.scrollView.contentOffset.y - offset,
+                      _scrollView.contentOffset.y - offset,
                       self.bounds.size.width,
                       self.bounds.size.height + 2 * offset);
 }
@@ -730,9 +771,25 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 
 @implementation MZSelectorView(ResetClear)
 
+- (void)reloadAllItems {
+    [self   clearAllItems];
+    [self prepareAllItems];
+}
+
 - (void)clearAllItems {
     [self resetAllItems];
     [_items removeAllObjects];
+}
+
+- (BOOL)prepareAllItems {
+    BOOL out = _items.count == 0;
+    if (out) {
+        NSUInteger numberOfItems = self.numberOfItems;
+        for (NSUInteger i = 0; i < numberOfItems; ++i) {
+            [_items addObject:[MZSelectorItem itemWithDelegate:self]];
+        }
+    }
+    return out;
 }
 
 - (void)resetAllItems {
@@ -753,24 +810,25 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
     [self resetItemTransforms:_items];
 }
 
+- (void)resetDisplayingItemTransforms {
+    [self resetItemTransforms:[self displayingItems]];
+}
+
 - (void)resetItemTransforms:(NSArray<MZSelectorItem*>*)items {
     for (MZSelectorItem *item in items) {
-        if (item.hasItem && item.item.superview == self.scrollView) {
-            item.item.contentView.layer.transform = CATransform3DIdentity;
-        }
+        [self resetItemTransform:item];
     }
-    /* calculate frames */
-    [self updateLayout];
+}
+
+- (void)resetItemTransform:(MZSelectorItem*)item {
+    if (item && item.hasItem && item.item.superview == self.scrollView) {
+        item.item.contentView.layer.transform = CATransform3DIdentity;
+    }
 }
 
 @end
 
 @implementation MZSelectorView(Private)
-
-- (void)setActiveViewItem:(MZSelectorViewItem *)activeViewItem {
-    NSAssert((_activeViewItem && !activeViewItem) || !_activeViewItem, @"First active item has to be deactivated!");
-    _activeViewItem = activeViewItem;
-}
 
 @end
 

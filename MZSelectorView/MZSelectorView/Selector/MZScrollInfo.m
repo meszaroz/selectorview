@@ -39,6 +39,53 @@
 
 @end
 
+@implementation MZScrollInfoData(Logic)
+
+static const CGFloat kDefaultSizeMinLimit = 0.01;
+
+- (CGPoint)absolutePositionInScrollContentOfScrollViewRelativePosition:(CGPoint)position {
+    return CGPointMake(_contentOffset.x + _viewSize.width  / 2,
+                       _contentOffset.y + _viewSize.height / 2);
+}
+
+- (CGPoint)relativePositionInScrollContentOfScrollViewCenter {
+    return [self relativePositionInScrollContentOfScrollViewRelativePosition:CGPointMake(0.5, 0.5)];
+}
+
+- (CGPoint)relativePositionInScrollContentOfScrollViewRelativePosition:(CGPoint)position {
+    CGPoint absolutePositionInScrollContent = [self absolutePositionInScrollContentOfScrollViewRelativePosition:position];
+    return CGPointMake(_contentSize.width  > kDefaultSizeMinLimit ? absolutePositionInScrollContent.x / _contentSize.width  : 0.0,
+                       _contentSize.height > kDefaultSizeMinLimit ? absolutePositionInScrollContent.y / _contentSize.height : 0.0);
+}
+
+- (CGPoint)relativePositionInScrollContentOfAbsolutePositionInScrollContent:(CGPoint)position {
+    return CGPointMake(_contentSize.width  > kDefaultSizeMinLimit ? position.x / _contentSize.width  : 0.0,
+                       _contentSize.height > kDefaultSizeMinLimit ? position.y / _contentSize.height : 0.0);
+}
+
+- (CGPoint)relativePositionInScrollViewOfAbsolutePositionInScrollContent:(CGPoint)position {
+    return CGPointMake(_viewSize.width  > kDefaultSizeMinLimit ? (position.x - _contentOffset.x) / _viewSize.width  : 0.0,
+                       _viewSize.height > kDefaultSizeMinLimit ? (position.y - _contentOffset.y) / _viewSize.height : 0.0);
+
+}
+
+- (CGPoint)contentOffsetOfRelativeScrollViewPosition:(CGPoint)relViewPosition inRelationToAbsolutePositionInScrollContent:(CGPoint)absContentPosition {
+    CGPoint out = CGPointMake(_viewSize.width  > kDefaultSizeMinLimit ? absContentPosition.x - (relViewPosition.x * _viewSize.width ) : 0.0,
+                              _viewSize.height > kDefaultSizeMinLimit ? absContentPosition.y - (relViewPosition.y * _viewSize.height) : 0.0);
+    return [self limitedContentOffset:out];
+}
+
+- (CGPoint)limitedContentOffset:(CGPoint)contentOffset {
+    return CGPointMake(_contentSize.width  > kDefaultSizeMinLimit && _viewSize.width  > kDefaultSizeMinLimit ?
+                            MAX(MIN(MAX(_contentSize.width  - _viewSize.width , 0), contentOffset.x), 0) :
+                            0.0,
+                       _contentSize.height > kDefaultSizeMinLimit && _viewSize.height > kDefaultSizeMinLimit ?
+                            MAX(MIN(MAX(_contentSize.height - _viewSize.height, 0), contentOffset.y), 0) :
+                            0.0);
+}
+
+@end
+
 @implementation MZScrollInfo
 
 - (void)setScrollView:(UIScrollView *)scrollView {
@@ -112,74 +159,6 @@
     if (_scrollView == object) {
         [self updateData];
     }
-}
-
-@end
-
-@implementation MZSCrollInfoHandler
-
-+ (CGPoint)relativePositionOfPointInScrollViewContent:(CGPoint)point
-                                             fromInfo:(MZScrollInfo*)info
-                              forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGPoint out = CGPointZero;
-    MZScrollInfoData *data = info.data[@(interfaceOrientation)];
-    if (data && data.contentSize.width > 0.1 && data.contentSize.height > 0.1) {
-        out = CGPointMake(point.x / data.contentSize.width,
-                          point.y / data.contentSize.height);
-    }
-    return out;
-}
-
-+ (CGPoint)relativeScreenPositionOfPointInScrollViewContent:(CGPoint)point
-                                                   fromInfo:(MZScrollInfo*)info
-                                    forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGPoint out = CGPointZero;
-    MZScrollInfoData *data = info.data[@(interfaceOrientation)];
-    if (data && data.viewSize.width > 0.1 && data.viewSize.height > 0.1) {
-        out = CGPointMake((point.x - data.contentOffset.x) / data.viewSize.width,
-                          (point.y - data.contentOffset.y) / data.viewSize.height);
-    }
-    return out;
-}
-
-+ (CGPoint)pointInScrollViewContentFromRelativePosition:(CGPoint)position
-                                               fromInfo:(MZScrollInfo*)info
-                                forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGPoint out = CGPointZero;
-    MZScrollInfoData *data = info.data[@(interfaceOrientation)];
-    if (data) {
-        out = CGPointMake(data.contentSize.width  * position.x,
-                          data.contentSize.height * position.y);
-    }
-    return out;
-}
-
-+ (CGPoint)contentOffsetOfRelativeScreenPosition:(CGPoint)position
-            inRelationToPointInScrollViewContent:(CGPoint)point
-                                        fromInfo:(MZScrollInfo*)info
-                         forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGPoint out = CGPointZero;
-    MZScrollInfoData *data = info.data[@(interfaceOrientation)];
-    if (data && data.viewSize.width > 0.1 && data.viewSize.height > 0.1) {
-        out = CGPointMake(point.x - (position.x * data.viewSize.width ),
-                          point.y - (position.y * data.viewSize.height));
-        out = [self limitedContentOffset:out fromInfo:info forInterfaceOrientation:interfaceOrientation];
-    }
-    return out;
-}
-
-+ (CGPoint)limitedContentOffset:(CGPoint)contentOffset
-                       fromInfo:(MZScrollInfo*)info
-        forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    CGPoint out = CGPointZero;
-    MZScrollInfoData *data = info.data[@(interfaceOrientation)];
-    if (data
-        && data.contentSize.width > 0.1 && data.contentSize.height > 0.1
-        && data.viewSize   .width > 0.1 && data.viewSize   .height > 0.1) {
-        out = CGPointMake(MAX(MIN(MAX(data.contentSize.width  - data.viewSize.width , 0), contentOffset.x), 0),
-                          MAX(MIN(MAX(data.contentSize.height - data.viewSize.height, 0), contentOffset.y), 0));
-    }
-    return out;
 }
 
 @end
