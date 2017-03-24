@@ -22,6 +22,8 @@
 		2111203F1E81CADC00E7DC29 /* MZSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111203D1E81CADC00E7DC29 /* MZSelectorView.m */; };
 		211120441E81CAE900E7DC29 /* MZSelectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */; };
 		2111204A1E81CEEB00E7DC29 /* MZSelectorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120491E81CEEB00E7DC29 /* MZSelectorItem.m */; };
+		211120531E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */; };
+		211120541E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,11 @@
 		211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewItem.m; path = Item/MZSelectorViewItem.m; sourceTree = "<group>"; };
 		211120481E81CEEB00E7DC29 /* MZSelectorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorItem.h; path = Selector/MZSelectorItem.h; sourceTree = "<group>"; };
 		211120491E81CEEB00E7DC29 /* MZSelectorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorItem.m; path = Selector/MZSelectorItem.m; sourceTree = "<group>"; };
+		2111204F1E85DE7000E7DC29 /* MZSelectorViewActivationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewActivationHandler.h; path = Selector/Handlers/MZSelectorViewActivationHandler.h; sourceTree = "<group>"; };
+		211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewActivationHandler.m; path = Selector/Handlers/MZSelectorViewActivationHandler.m; sourceTree = "<group>"; };
+		211120511E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewDefaultHandler.h; path = Selector/Handlers/MZSelectorViewDefaultHandler.h; sourceTree = "<group>"; };
+		211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewDefaultHandler.m; path = Selector/Handlers/MZSelectorViewDefaultHandler.m; sourceTree = "<group>"; };
+		211120551E85E82100E7DC29 /* MZSelectorViewHandlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewHandlers.h; path = Selector/Handlers/MZSelectorViewHandlers.h; sourceTree = "<group>"; };
 		3E3A25A0D859CDF0BE669028 /* Pods-MZSelectorView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.debug.xcconfig"; sourceTree = "<group>"; };
 		B4070D57412E3024C622CBD2 /* libPods-MZSelectorView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MZSelectorView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBE24617E00AA956B8E88BD9 /* Pods-MZSelectorView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.release.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.release.xcconfig"; sourceTree = "<group>"; };
@@ -184,11 +191,12 @@
 		211120381E81CAD200E7DC29 /* Selector */ = {
 			isa = PBXGroup;
 			children = (
-				2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */,
+				2111204E1E85DB0300E7DC29 /* Handlers */,
 				211120391E81CADC00E7DC29 /* MZScrollInfo.h */,
 				2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */,
 				211120481E81CEEB00E7DC29 /* MZSelectorItem.h */,
 				211120491E81CEEB00E7DC29 /* MZSelectorItem.m */,
+				2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */,
 				2111203C1E81CADC00E7DC29 /* MZSelectorView.h */,
 				2111203D1E81CADC00E7DC29 /* MZSelectorView.m */,
 			);
@@ -203,6 +211,18 @@
 				211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */,
 			);
 			name = Item;
+			sourceTree = "<group>";
+		};
+		2111204E1E85DB0300E7DC29 /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				211120551E85E82100E7DC29 /* MZSelectorViewHandlers.h */,
+				211120511E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.h */,
+				211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */,
+				2111204F1E85DE7000E7DC29 /* MZSelectorViewActivationHandler.h */,
+				211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */,
+			);
+			name = Handlers;
 			sourceTree = "<group>";
 		};
 		3DE98542DAC0A7DC635BC2E5 /* Frameworks */ = {
@@ -412,11 +432,13 @@
 				2111203F1E81CADC00E7DC29 /* MZSelectorView.m in Sources */,
 				211120441E81CAE900E7DC29 /* MZSelectorViewItem.m in Sources */,
 				211120001E81C96900E7DC29 /* AppDelegate.m in Sources */,
+				211120541E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m in Sources */,
 				211120301E81CA8800E7DC29 /* MZSelectorViewController.m in Sources */,
 				211120361E81CACD00E7DC29 /* CALayer+Anchor.m in Sources */,
 				2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */,
 				2111204A1E81CEEB00E7DC29 /* MZSelectorItem.m in Sources */,
 				21111FFD1E81C96900E7DC29 /* main.m in Sources */,
+				211120531E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m in Sources */,
 				211120371E81CACD00E7DC29 /* UIView+UserInteraction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
