@@ -56,8 +56,8 @@
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegate      > delegate;
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegateLayout> layout;
 
-/* ToDo: add selection state */
-@property (strong, nonatomic, readonly, nullable)         MZSelectorViewItem    *selectedViewItem;
+@property (        nonatomic, readonly, nonnull ) NSString *activeSelectionState; /* activate, reorder, insert, delete */
+@property (strong, nonatomic, readonly, nullable) MZSelectorViewItem *selectedViewItem;
 @property (strong, nonatomic, readonly, nonnull ) NSArray<MZSelectorViewItem *> *displayingViewItems;
 
 @property (nonatomic, readonly) NSUInteger   numberOfItems;

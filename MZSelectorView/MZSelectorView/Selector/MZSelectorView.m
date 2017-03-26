@@ -59,6 +59,10 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - functions
+- (NSString*)activeSelectionState {
+    return [_handlerController.activeHandler.class name];
+}
+
 - (MZSelectorViewItem*)selectedViewItem {
     MZSelectorItem *item = _items ? [_items selectedItem] : nil;
     return item ? item.item : nil;
@@ -414,10 +418,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return out;
 }
 
-/* ToDo */
-- (void)adjustContentOffset {
-}
-
 - (void)adjustContentOffsetForAppliedRotation {
     [self.activeHandler handleRotationOfSelectorView:self];
     [_scrollInfo updateInterfaceOrientation];
@@ -426,36 +426,17 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (void)updateLayout {
     [self calculateDimensions     ];
     [self calculateAndUpdateFrames];
-    [self layoutViews             ];
 }
 
 - (void)calculateDimensions {
     [self calculateAndUpdateContentHeight];
     [self calculateItemOrigins           ];
-}
-
-- (void)calculateAndUpdateContentHeight {
-    self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
     [self layoutViews];
-}
-
-- (BOOL)calculateItemOrigins {
-    NSUInteger numberOfItems = self.numberOfItems;
-    CGFloat itemDistance  = self.adjustedItemDistance;
-    CGFloat y = self.itemInsets.top;
-    
-    BOOL out = numberOfItems > 0 && itemDistance > 0.1;
-    
-    for (NSUInteger i = 0; i < numberOfItems; ++i) {
-        y += i == 0 ? 0 : itemDistance;
-        _items[i].origin = CGPointMake(0,out ? y : 0);
-    }
-    
-    return out;
 }
 
 - (void)calculateAndUpdateFrames {
     [self layoutAllItems];
+    [self layoutViews   ];
 }
 
 - (NSArray<NSValue*>*)calculatedFrames {
@@ -468,6 +449,26 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         self;
     
     [view layoutIfNeeded];
+}
+
+#pragma mark - Layout Private
+- (void)calculateAndUpdateContentHeight {
+    self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
+}
+
+- (BOOL)calculateItemOrigins {
+    NSUInteger numberOfItems = self.numberOfItems;
+    CGFloat itemDistance  = self.adjustedItemDistance;
+    CGFloat y = self.itemInsets.top;
+    
+    BOOL out = numberOfItems > 0 && itemDistance > 0.1;
+    
+    for (NSUInteger i = 0; i < numberOfItems; ++i) {
+        y += i == 0 ? 0 : itemDistance;
+        _items[i].origin = CGPointMake(0,out ? y : 0); /* updates frame also */
+    }
+    
+    return out;
 }
 
 @end

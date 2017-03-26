@@ -71,7 +71,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         
         [UIView animateWithDuration:kDefaultAnimationDuration
                          animations:^{
-                             [selectorView updateLayout];
+                             [selectorView updateLayout            ];
                              [selectorView transformDisplayingItems];
                          }
                          completion:^(BOOL finished) {

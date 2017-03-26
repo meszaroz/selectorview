@@ -113,10 +113,7 @@
 - (void)layoutViews;
 
 - (void)calculateDimensions;
-- (void)calculateAndUpdateContentHeight;
-- (BOOL)calculateItemOrigins;
 
-- (void)adjustContentOffset;
 - (void)adjustContentOffsetForAppliedRotation;
 
 @end
