@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '0B49C5F1FA21CB054CED786646926EEF'
-               BlueprintName = 'Pods-MZSelectorView'
+               BlueprintIdentifier = '746A78C180644E18743F4EC380563D6E'
+               BlueprintName = 'TransitionKit'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libPods-MZSelectorView.a'>
+               BuildableName = 'libTransitionKit.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

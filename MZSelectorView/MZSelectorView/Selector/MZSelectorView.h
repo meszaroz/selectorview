@@ -44,7 +44,7 @@
 - (CGFloat)   topInsetInSelectorView:(MZSelectorView * _Nonnull)selectorView;
 - (CGFloat)bottomInsetInSelectorView:(MZSelectorView * _Nonnull)selectorView;
 
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformViewItemContentView:(UIView * _Nonnull)view atIndex:(NSUInteger)index andPoint:(CGPoint)point;
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformContentLayer:(CALayer* _Nonnull)layer inViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index;
 
 @end
 
@@ -56,7 +56,8 @@
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegate      > delegate;
 @property (weak, nonatomic, nullable) id<MZSelectorViewDelegateLayout> layout;
 
-@property (strong, nonatomic, readonly, nullable)         MZSelectorViewItem    *activeViewItem;
+/* ToDo: add selection state */
+@property (strong, nonatomic, readonly, nullable)         MZSelectorViewItem    *selectedViewItem;
 @property (strong, nonatomic, readonly, nonnull ) NSArray<MZSelectorViewItem *> *displayingViewItems;
 
 @property (nonatomic, readonly) NSUInteger   numberOfItems;

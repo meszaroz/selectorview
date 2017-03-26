@@ -15,15 +15,28 @@
 
 @protocol MZSelectorViewActionHandler<NSObject>
 
++ (NSString*)name;
+
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
+
+@optional
+- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index;
+- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView;
+
+@end
+
+@interface NSArray(Item)
+
+- (MZSelectorItem*)selectedItem;
+- (NSUInteger)indexOfSelectedItem;
 
 @end
 
 @interface MZSelectorView(Private)
 
 @property (strong, nonatomic, readonly) id<MZSelectorViewActionHandler> activeHandler;
-@property (strong, nonatomic, readonly) NSArray<MZSelectorItem *> *items;
+@property (strong, nonatomic, readonly) NSMutableArray<MZSelectorItem *> *items; /* mutable, because of (later) delete and insert possibilities */
 @property (strong, nonatomic, readonly) MZScrollInfo *scrollInfo;
 
 @end

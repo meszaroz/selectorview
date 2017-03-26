@@ -10,7 +10,13 @@
 #import "MZSelectorItem.h"
 #import "MZScrollInfo.h"
 
+NSString* kDefaultHandlerName = @"DefaulHandler";
+
 @implementation MZSelectorViewDefaultHandler
+
++ (NSString*)name {
+    return kDefaultHandlerName;
+}
 
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];

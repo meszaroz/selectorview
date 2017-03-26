@@ -1,12 +1,15 @@
 PODS:
   - PureLayout (3.0.1)
+  - TransitionKit (2.2.1)
 
 DEPENDENCIES:
   - PureLayout
+  - TransitionKit
 
 SPEC CHECKSUMS:
   PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
+  TransitionKit: 9ceccda4cd0cdc0a05ef85eb235e5a3292c3c250
 
-PODFILE CHECKSUM: 5e69d8134006169b42ab1368793e2ceaf446e809
+PODFILE CHECKSUM: fead9bfcfd54837f4e9d14c559769513a5239f4a
 
 COCOAPODS: 1.0.0

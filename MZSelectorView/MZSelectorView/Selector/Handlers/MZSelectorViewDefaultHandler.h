@@ -8,5 +8,7 @@
 
 #import "MZSelectorView_p.h"
 
+extern NSString* kDefaultHandlerName;
+
 @interface MZSelectorViewDefaultHandler : NSObject <MZSelectorViewActionHandler>
 @end

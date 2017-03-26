@@ -16,6 +16,8 @@
 
 @interface MZSelectorViewItem() {
     __weak MZSelectorView *_selectorView;
+    
+    BOOL _active;
     UIView *_activeView;
 }
 
@@ -99,16 +101,20 @@
 - (void)setSelectorView:(MZSelectorView *)selectorView {
     NSAssert(_selectorView == nil, @"Only one selectorView assignment is allowed!");
     _selectorView = selectorView;
-    [self resetActive];
+    [self resetSelected];
 }
 
 - (MZSelectorView*)selectorView {
     return _selectorView;
 }
 
-- (void)resetActive {
+- (void)resetSelected {
     self.selected = NO;
     self.active   = NO;
+}
+
+- (BOOL)isActive {
+    return _active;
 }
 
 @end

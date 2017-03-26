@@ -213,13 +213,12 @@
     [button addTarget:self action:@selector(action2) forControlEvents:UIControlEventTouchUpInside];*/
 }
 
-- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformViewItemContentView:(UIView * _Nonnull)view atIndex:(NSUInteger)index andPoint:(CGPoint)point {
+- (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformContentLayer:(CALayer* _Nonnull)layer inViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index {
     
     // LOGIC - BEGIN - delegate - all views in collection get this
+    CGPoint point = [selectorView.scrollView convertPoint:item.frame.origin toView:self.view];
     
-    point = [selectorView.scrollView convertPoint:point toView:self.view];
-    
-    [view.layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.0)];
+    [layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.0)];
     
     CGFloat pos = point.y/800;
     //NSLog(@"%f", [item.contentView convertPoint:item.contentView.bounds.origin toView:self.view].y);
@@ -232,7 +231,7 @@
     //t = CATransform3DTranslate(t, 0, -0, -200);
     pos = 0.7 + (0.3 * MAX(0.0, pos));
     t = CATransform3DScale(t, pos, pos, 1);
-    view.layer.transform = t;
+    layer.transform = t;
     
     /*dispatch_async(dispatch_get_main_queue(), ^{
         item.contentView.layer.position = CGPointMake(item.contentView.layer.position.x,0.0);

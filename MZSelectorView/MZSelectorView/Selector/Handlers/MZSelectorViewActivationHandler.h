@@ -8,14 +8,7 @@
 
 #import "MZSelectorView_p.h"
 
+extern NSString* kActivationHandlerName;
+
 @interface MZSelectorViewActivationHandler : NSObject <MZSelectorViewActionHandler>
-@end
-
-@interface MZSelectorViewActivationHandler(Interface)
-
-- (MZSelectorItem*)activeItemInSelectorView:(MZSelectorView *)selectorView;
-
-- (BOOL)activateViewItemAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView *)selectorView;
-- (BOOL)deactivateActiveViewItemInSelectorView:(MZSelectorView *)selectorView;
-
 @end

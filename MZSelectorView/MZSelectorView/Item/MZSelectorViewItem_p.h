@@ -13,6 +13,7 @@
 
 @interface MZSelectorViewItem(Private)
 
+@property (nonatomic, getter=isActive) BOOL active;
 @property (weak, nonatomic) MZSelectorView *selectorView;
 
 @end

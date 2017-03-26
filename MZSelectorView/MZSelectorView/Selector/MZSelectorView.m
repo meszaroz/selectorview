@@ -12,7 +12,7 @@
 #import "MZSelectorViewItem_p.h"
 #import "MZSelectorViewItem.h"
 #import "MZSelectorItem.h"
-#import "MZSelectorViewHandlers.h"
+#import "MZSelectorViewHandlerController.h"
 #import "MZScrollInfo.h"
 #import "CALayer+Anchor.h"
 
@@ -23,9 +23,7 @@
     MZScrollInfo *_scrollInfo;
     UITapGestureRecognizer *_tapGestureRecognizer;
     
-    id<MZSelectorViewActionHandler> _activeHandler;
-    MZSelectorViewDefaultHandler    *_defaultHandler;
-    MZSelectorViewActivationHandler *_activationHandler;
+    MZSelectorViewHandlerController *_handlerController;
 }
 @end
 
@@ -61,8 +59,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - functions
-- (MZSelectorViewItem*)activeViewItem {
-    MZSelectorItem *item = [_activationHandler activeItemInSelectorView:self];
+- (MZSelectorViewItem*)selectedViewItem {
+    MZSelectorItem *item = _items ? [_items selectedItem] : nil;
     return item ? item.item : nil;
 }
 
@@ -143,7 +141,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - configure
 - (BOOL)reloadData {
-    BOOL out = !_items || ![_activationHandler activeItemInSelectorView:self]; /* reload only if idle */
+    BOOL out = !_items || ![_items selectedItem]; /* reload only if nothing selected */
     if (out) {
         [self reloadAllItems];
         [self reloadView    ];
@@ -160,27 +158,21 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - view item activation/deactivation
 - (BOOL)activateViewItemAtIndex:(NSUInteger)index {
-    BOOL out = _activeHandler == _defaultHandler;
-    if (out) {
-        _activeHandler = _activationHandler;
-        out = [_activationHandler activateViewItemAtIndex:index inSelectorView:self];
-    }
-    return out;
+    return [_handlerController activateHandlerWithName:kActivationHandlerName
+                                        inSelectorView:self
+                                     withSelectedIndex:index];
 }
 
 - (BOOL)deactivateActiveViewItem {
-    BOOL out = _activeHandler == _activationHandler;
-    if (out) {
-        _activeHandler = _defaultHandler;
-        out = [_activationHandler deactivateActiveViewItemInSelectorView:self];
-    }
-    return out;
+    return [_handlerController activateHandlerWithName:kDefaultHandlerName
+                                        inSelectorView:self
+                                     withSelectedIndex:NSNotFound];
 }
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self checkItemDisplayingStates];
-    [self transformAllItems ];
+    [self transformDisplayingItems ];
 }
 
 - (void)checkItemDisplayingStates {
@@ -234,9 +226,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)setupHandlers {
-    _defaultHandler    = [MZSelectorViewDefaultHandler    new];
-    _activationHandler = [MZSelectorViewActivationHandler new];
-    _activeHandler = _defaultHandler;
+    _handlerController = [[MZSelectorViewHandlerController alloc] initWithIdleHandler:  [MZSelectorViewDefaultHandler    new]
+                                                                 andSelectionHandlers:@[[MZSelectorViewActivationHandler new]]];
 }
 
 - (void)setupOrientationChange {
@@ -387,12 +378,12 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (BOOL)transformItem:(MZSelectorItem*)item {
     BOOL out = item && item.hasItem
-        && _layout && [_layout respondsToSelector:@selector(selectorView:transformViewItemContentView:atIndex:andPoint:)];
+        && _layout && [_layout respondsToSelector:@selector(selectorView:transformContentLayer:inViewItem:atIndex:)];
     if (out) {
         [_layout selectorView:self
- transformViewItemContentView:item.item.contentView
-                      atIndex:[_items indexOfObject:item]
-                     andPoint:item.origin];
+        transformContentLayer:item.item.contentView.layer
+                   inViewItem:item.item
+                      atIndex:[_items indexOfObject:item]];
     }
     return out;
 }
@@ -428,7 +419,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)adjustContentOffsetForAppliedRotation {
-    [_activeHandler handleRotationOfSelectorView:self];
+    [self.activeHandler handleRotationOfSelectorView:self];
     [_scrollInfo updateInterfaceOrientation];
 }
 
@@ -468,7 +459,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (NSArray<NSValue*>*)calculatedFrames {
-    return [_activeHandler calculatedFramesInSelectorView:self];
+    return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
 - (void)layoutViews {
@@ -578,15 +569,34 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 @implementation MZSelectorView(Private)
 
 - (id<MZSelectorViewActionHandler>)activeHandler {
-    return _activeHandler;
+    return _handlerController.activeHandler;
 }
 
-- (NSArray<MZSelectorItem *> *)items {
+- (NSMutableArray<MZSelectorItem *> *)items {
     return _items;
 }
 
 - (MZScrollInfo *)scrollInfo {
     return _scrollInfo;
+}
+
+@end
+
+@implementation NSArray(Item)
+
+- (MZSelectorItem*)selectedItem {
+    NSUInteger index = [self indexOfSelectedItem];
+    return index != NSNotFound ? self[index] : nil;
+}
+
+- (NSUInteger)indexOfSelectedItem {
+    return [self indexOfItemWithBlock:^BOOL(MZSelectorViewItem *viewItem) { return viewItem.isSelected; }];
+}
+
+- (NSUInteger)indexOfItemWithBlock:(BOOL(^)(MZSelectorViewItem* viewItem))block {
+    return [self indexOfObjectPassingTest:^BOOL(MZSelectorItem*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return block && obj.hasItem && block(obj.item);
+    }];
 }
 
 @end

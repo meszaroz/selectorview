@@ -12,6 +12,5 @@
 
 @property (nonatomic, readonly, nonnull) UIView *contentView;
 @property (nonatomic, getter=isSelected) BOOL selected;
-@property (nonatomic, getter=isActive  ) BOOL active;
 
 @end

@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/MZSelectorViewController.m"
-            timestampString = "511916988.471813"
+            timestampString = "512216787.74722"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
-            landmarkName = "-selectorView:transformViewItemContentView:atIndex:andPoint:"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
+            landmarkName = "-selectorView:transformContentLayer:inViewItem:atIndex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/MZSelectorViewController.m"
-            timestampString = "511916988.471813"
+            timestampString = "512216787.74722"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
-            landmarkName = "-selectorView:transformViewItemContentView:atIndex:andPoint:"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
+            landmarkName = "-selectorView:transformContentLayer:inViewItem:atIndex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
             landmarkName = "-originOfViewItem:"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
             landmarkName = "-displayStatusChangedOfSelectorItem:"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,7 +74,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "-displayStatusChangedOfSelectorItem:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/MZSelectorView.m"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "121"
@@ -90,27 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
-            landmarkName = "-displayStatusChangedOfSelectorItem:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
             landmarkName = "-checkItemDisplayingStates"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
             landmarkName = "-checkItemDisplayingStates"
             landmarkType = "7">
          </BreakpointContent>
@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "382"
-            endingLineNumber = "382"
+            startingLineNumber = "373"
+            endingLineNumber = "373"
             landmarkName = "-transformItems:"
             landmarkType = "7">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
             landmarkName = "-displayStatusChangedOfSelectorItem:"
             landmarkType = "7">
          </BreakpointContent>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
             landmarkName = "-displayStatusChangedOfSelectorItem:"
             landmarkType = "7">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "182"
-            endingLineNumber = "182"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
             landmarkName = "-scrollViewDidScroll:"
             landmarkType = "7">
          </BreakpointContent>
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "507"
-            endingLineNumber = "507"
+            startingLineNumber = "498"
+            endingLineNumber = "498"
             landmarkName = "-isItemDisplaying:"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
             landmarkName = "-layoutItems:"
             landmarkType = "7">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MZSelectorView/Selector/MZSelectorView.m"
-            timestampString = "512092257.860941"
+            timestampString = "512215465.349143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "553"
-            endingLineNumber = "553"
+            startingLineNumber = "544"
+            endingLineNumber = "544"
             landmarkName = "-resetContentOffset"
             landmarkType = "7">
          </BreakpointContent>
@@ -288,6 +288,102 @@
             startingLineNumber = "160"
             endingLineNumber = "160"
             landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/Handlers/MZSelectorViewHandlerController.m"
+            timestampString = "512215496.922466"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "-initWithIdleHandler:andSelectionHandlers:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/MZSelectorView.m"
+            timestampString = "512215671.171985"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "-reloadView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/Handlers/MZSelectorViewDefaultHandler.m"
+            timestampString = "512215788.053635"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
+            landmarkName = "-calculatedFramesInSelectorView:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/Handlers/MZSelectorViewDefaultHandler.m"
+            timestampString = "512215792.67404"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "-handleRotationOfSelectorView:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/Handlers/MZSelectorViewHandlerController.m"
+            timestampString = "512216057.024194"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "-activeHandler"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MZSelectorView/Selector/Handlers/MZSelectorViewActivationHandler.m"
+            timestampString = "512216310.088658"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "-selectorView:deactivateItemAtIndex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

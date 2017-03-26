@@ -7,20 +7,83 @@
 //
 
 #import "MZSelectorViewActivationHandler.h"
+#import "MZSelectorViewItem_p.h"
 #import "MZSelectorViewItem.h"
 #import "MZSelectorItem.h"
 #import "MZScrollInfo.h"
 
-@interface NSArray(Item)
-
-- (MZSelectorItem*)selectedItem;
-- (MZSelectorItem*)activeItem;
-- (NSUInteger)indexOfSelectedItem;
-- (NSUInteger)indexOfActiveItem;
-
-@end
+NSString* kActivationHandlerName = @"ActivationHandler";
+static const CGFloat kDefaultAnimationDuration = 0.5;
 
 @implementation MZSelectorViewActivationHandler
+
++ (NSString*)name {
+    return kActivationHandlerName;
+}
+
+#pragma mark - view item activation/deactivation
+- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index {
+    BOOL out = selectorView && selectorView.superview && ![selectorView.items selectedItem] && index < selectorView.items.count;
+    
+    if (out) {
+        selectorView.scrollView.scrollEnabled = NO;
+        
+        if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willActivateViewItemAtIndex:)]) {
+            [selectorView.delegate selectorView:selectorView willActivateViewItemAtIndex:index];
+        }
+        
+        MZSelectorViewItem *item = selectorView.items[index].item;
+        item.selected = YES;
+        
+        [UIView animateWithDuration:kDefaultAnimationDuration
+                         animations:^{
+                             [selectorView resetItemTransform:selectorView.items[index]];
+                             [selectorView updateLayout];
+                         }
+                         completion:^(BOOL finished) {
+                             item.active = YES;
+                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
+                                 [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
+                             }
+                         }];
+    }
+    
+    return out;
+}
+
+- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView {
+    return [self selectorView:selectorView deactivateItemAtIndex:[selectorView.items indexOfSelectedItem]];
+}
+
+- (BOOL)selectorView:(MZSelectorView *)selectorView deactivateItemAtIndex:(NSUInteger)index {
+    BOOL out = selectorView && selectorView.superview && [selectorView selectedViewItem];
+    
+    if (out) {
+        if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willDeactivateViewItemAtIndex:)]) {
+            [selectorView.delegate selectorView:selectorView willDeactivateViewItemAtIndex:index];
+        }
+        
+        /* ToDo: reapply transform for other views */
+        
+        MZSelectorViewItem *item = selectorView.items[index].item;
+        item.active   = NO;
+        item.selected = NO;
+        
+        [UIView animateWithDuration:kDefaultAnimationDuration
+                         animations:^{
+                             [selectorView updateLayout];
+                             [selectorView transformDisplayingItems];
+                         }
+                         completion:^(BOOL finished) {
+                             selectorView.scrollView.scrollEnabled = YES;
+                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didDeactivateViewItemAtIndex:)]) {
+                                 [selectorView.delegate selectorView:selectorView didDeactivateViewItemAtIndex:index];
+                             }
+                         }];
+    }
+    
+    return out;
+}
 
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
@@ -93,7 +156,7 @@
 #pragma mark - adjust scroll positions for layout
 + (CGPoint)referenceRelativeScrollPositionInSelectorView:(MZSelectorView *)selectorView {
     MZScrollInfoData *data = selectorView.scrollInfo.data[@(selectorView.scrollInfo.activeInterfaceOrientation)];
-    MZSelectorItem *item = [selectorView.items activeItem];
+    MZSelectorItem *item = [selectorView.items selectedItem];
     
     return item ?
         [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:item.origin]: /* active */
@@ -102,120 +165,12 @@
 
 + (void)adjustScrollPositionToReferenceRelativeScrollViewPosition:(CGPoint)position inSelectorView:(MZSelectorView *)selectorView {
     MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
-    MZSelectorItem *item = [selectorView.items activeItem];
+    MZSelectorItem *item = [selectorView.items selectedItem];
     
     if (item) {
         selectorView.scrollView.contentOffset = [data contentOffsetOfRelativeScrollViewPosition:position
                                                     inRelationToAbsolutePositionInScrollContent:item.origin];
     }
-}
-
-@end
-
-@implementation MZSelectorViewActivationHandler(Interface)
-
-- (MZSelectorItem*)activeItemInSelectorView:(MZSelectorView *)selectorView {
-    return selectorView && selectorView.items ?
-        [selectorView.items activeItem] :
-        nil;
-}
-
-static const CGFloat kDefaultAnimationDuration = 0.5;
-
-#pragma mark - view item activation/deactivation
-- (BOOL)activateViewItemAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView *)selectorView {
-    BOOL out = selectorView && selectorView.superview && ![selectorView.items activeItem] && index < selectorView.items.count;
-    
-    if (out) {
-        selectorView.scrollView.scrollEnabled = NO;
-        
-        if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willActivateViewItemAtIndex:)]) {
-            [selectorView.delegate selectorView:selectorView willActivateViewItemAtIndex:index];
-        }
-        
-        MZSelectorViewItem *item = selectorView.items[index].item;
-        item.selected = YES;
-        
-        [UIView animateWithDuration:kDefaultAnimationDuration
-                         animations:^{
-                             [selectorView resetItemTransform:selectorView.items[index]];
-                             [selectorView updateLayout];
-                         }
-                         completion:^(BOOL finished) {
-                             item.active = YES;                             
-                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
-                                 [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
-                             }
-                         }];
-    }
-    
-    return out;
-}
-
-- (BOOL)deactivateActiveViewItemInSelectorView:(MZSelectorView *)selectorView {
-    return [self deactivateViewItemAtIndex:[selectorView.items indexOfActiveItem] inSelectorView:selectorView];
-}
-
-- (BOOL)deactivateViewItemAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView *)selectorView {
-    BOOL out = selectorView && selectorView.superview && [self isItemActiveAtIndex:index inSelectorView:selectorView];
-    
-    if (out) {
-        if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willDeactivateViewItemAtIndex:)]) {
-            [selectorView.delegate selectorView:selectorView willDeactivateViewItemAtIndex:index];
-        }
-        
-        /* ToDo: reapply transform for other views */
-        
-        MZSelectorViewItem *item = selectorView.items[index].item;
-        item.active   = NO;
-        item.selected = NO;
-        
-        [UIView animateWithDuration:kDefaultAnimationDuration
-                         animations:^{
-                             [selectorView updateLayout];
-                             [selectorView transformItem:selectorView.items[index]];
-                         }
-                         completion:^(BOOL finished) {
-                             selectorView.scrollView.scrollEnabled = YES;
-                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didDeactivateViewItemAtIndex:)]) {
-                                 [selectorView.delegate selectorView:selectorView didDeactivateViewItemAtIndex:index];
-                             }
-                         }];
-    }
-    
-    return out;
-}
-
-- (BOOL)isItemActiveAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView *)selectorView {
-    return selectorView && index < selectorView.items.count && selectorView.items[index].item.active;
-}
-
-@end
-
-@implementation NSArray(Item)
-
-- (MZSelectorItem*)selectedItem {
-    NSUInteger index = [self indexOfSelectedItem];
-    return index != NSNotFound ? self[index] : nil;
-}
-
-- (NSUInteger)indexOfSelectedItem {
-    return [self indexOfItemWithBlock:^BOOL(MZSelectorViewItem *viewItem) { return viewItem.isSelected; }];
-}
-
-- (MZSelectorItem*)activeItem {
-    NSUInteger index = [self indexOfActiveItem];
-    return index != NSNotFound ? self[index] : nil;
-}
-
-- (NSUInteger)indexOfActiveItem {
-    return [self indexOfItemWithBlock:^BOOL(MZSelectorViewItem *viewItem) { return viewItem.isActive;   }];
-}
-
-- (NSUInteger)indexOfItemWithBlock:(BOOL(^)(MZSelectorViewItem* viewItem))block {
-    return [self indexOfObjectPassingTest:^BOOL(MZSelectorItem*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        return block && obj.hasItem && block(obj.item);
-    }];
 }
 
 @end
