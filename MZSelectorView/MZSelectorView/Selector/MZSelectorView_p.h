@@ -17,6 +17,7 @@
 
 + (NSString*)name;
 
+/* ToDo: modify contentSize and contentOffset: needed for insert/delete/reorder animations */
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
 
@@ -38,6 +39,8 @@
 @property (strong, nonatomic, readonly) id<MZSelectorViewActionHandler> activeHandler;
 @property (strong, nonatomic, readonly) NSMutableArray<MZSelectorItem *> *items; /* mutable, because of (later) delete and insert possibilities */
 @property (strong, nonatomic, readonly) MZScrollInfo *scrollInfo;
+
+- (void)handleScrollChange;
 
 @end
 
@@ -80,9 +83,8 @@
 @interface MZSelectorView(Info)
 
 @property (nonatomic          ) CGFloat      contentHeight;
-@property (nonatomic, readonly) NSUInteger   numberOfItems;
-@property (nonatomic, readonly) CGFloat      minimalItemDistance;
 @property (nonatomic, readonly) UIEdgeInsets itemInsets;
+@property (nonatomic, readonly) BOOL hasViewSize;
 
 @end
 
@@ -106,15 +108,15 @@
 @interface MZSelectorView(Layout)
 
 - (void)updateLayout;
-
 - (BOOL)layoutAllItems;
 - (BOOL)layoutDisplayingItems;
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items;
 - (void)layoutViews;
 
-- (void)calculateDimensions;
-
+- (void)calculateAndUpdateDimensions;
 - (void)adjustContentOffsetForAppliedRotation;
+
+- (void)loadAndDisplayItem:(MZSelectorItem*)item;
 
 @end
 

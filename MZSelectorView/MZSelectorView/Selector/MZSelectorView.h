@@ -48,6 +48,7 @@
 
 @end
 
+/* ToDo: add deque reusable views */
 @interface MZSelectorView : UIView
 
 @property (strong, nonatomic, nullable) UIScrollView *scrollView;
@@ -60,9 +61,8 @@
 @property (strong, nonatomic, readonly, nullable) MZSelectorViewItem *selectedViewItem;
 @property (strong, nonatomic, readonly, nonnull ) NSArray<MZSelectorViewItem *> *displayingViewItems;
 
-@property (nonatomic, readonly) NSUInteger   numberOfItems;
-@property (nonatomic, readonly) CGFloat      minimalItemDistance;
-@property (nonatomic, readonly) UIEdgeInsets itemInsets;
+@property (nonatomic, readonly) NSUInteger numberOfItems;
+@property (nonatomic, readonly) CGFloat    minimalItemDistance;
 
 - (BOOL)activateViewItemAtIndex:(NSUInteger)index;
 - (BOOL)deactivateActiveViewItem;

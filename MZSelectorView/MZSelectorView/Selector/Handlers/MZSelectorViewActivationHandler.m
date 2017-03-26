@@ -147,7 +147,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     CGPoint scrollPosition = [self.class referenceRelativeScrollPositionInSelectorView:selectorView];
     
     /* 2. calculate content height and origins - needed before scroll position adjusting, because it uses the info of the new positions */
-    [selectorView calculateDimensions];
+    [selectorView calculateAndUpdateDimensions];
     
     /* 3. adjust scroll positions for changed layout */
     [self.class adjustScrollPositionToReferenceRelativeScrollViewPosition:scrollPosition inSelectorView:selectorView];

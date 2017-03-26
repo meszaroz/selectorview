@@ -84,7 +84,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (NSUInteger)indexOfViewItem:(MZSelectorViewItem * _Nonnull)item {
     return [_items indexOfObjectPassingTest:^BOOL(MZSelectorItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        return item && obj.item == item;
+        return item && obj.hasItem && obj.item == item;
     }];
 }
 
@@ -102,6 +102,18 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     }]];
 }
 
+- (NSUInteger)numberOfItems {
+    return _dataSource != nil ?
+        [_dataSource numberOfItemsInSelectorView:self] :
+        0;
+}
+
+- (CGFloat)minimalItemDistance {
+    return _layout && [_layout respondsToSelector:@selector(minimalItemDistanceInSelectorView:)] ?
+        [_layout minimalItemDistanceInSelectorView:self] :
+        MAX(20.0, self.bounds.size.height / 4);
+}
+
 #pragma mark - MZSelectorItemDelegate
 - (MZSelectorViewItem*)createSelectorViewItemForSelectorItem:(MZSelectorItem*)item {
     MZSelectorViewItem *out = nil;
@@ -109,37 +121,50 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         NSUInteger index = [_items indexOfObject:item];
         if (index != NSNotFound) {
             out = [_dataSource selectorView:self viewItemAtIndex:index];
-            out.selectorView = self;
             
             NSAssert([out isKindOfClass:MZSelectorViewItem.class], @"Unsupported Item type!");
             
-            [out removeFromSuperview];
-            [_scrollView addSubview:out];
+            out.selectorView = self;
+            
+            [self addViewItemToScrollView:out atIndex:index];
         }
     }
     return out;
 }
 
+- (void)addViewItemToScrollView:(MZSelectorViewItem*)view atIndex:(NSUInteger)index {
+    MZSelectorItem *nextItem = nil;
+    MZSelectorItem *prevItem = nil;
+    
+    /* ToDo: find next closest item -> move to function */
+    NSInteger nextIndex = index, prevIndex = index;
+    while (!nextItem && !prevItem && (prevIndex >= 0 || nextIndex < _items.count)) {
+        if (prevIndex >= 0          ) { MZSelectorItem *tmp = _items[prevIndex--]; prevItem = tmp.hasItem ? tmp : prevItem; }
+        if (nextIndex < _items.count) { MZSelectorItem *tmp = _items[nextIndex++]; nextItem = tmp.hasItem ? tmp : nextItem; }
+    }
+    
+    /**/ if (nextItem && nextItem.hasItem) { [_scrollView insertSubview:view belowSubview:nextItem.item]; }
+    else if (prevItem && prevItem.hasItem) { [_scrollView insertSubview:view aboveSubview:prevItem.item]; }
+    else                                   { [_scrollView addSubview:view];                               }
+}
+
 - (void)displayStatusChangedOfSelectorItem:(MZSelectorItem*)item {
     NSUInteger index = [_items indexOfObject:item];
     if (index != NSNotFound) {
-        /* 1. Transform to identity -> correct autolayout function */
         [self resetItemTransform:item];
-        
-        /* 2. Notify delegate of change in displaying status -> optimization possibilities */
         /**/ if ( item.displaying) { /* Show */
+            [self loadAndDisplayItem:item];
             if (_delegate && [_delegate respondsToSelector:@selector(selectorView:willDisplayViewItem:atIndex:)]) {
                 [_delegate selectorView:self willDisplayViewItem:item.item atIndex:index];
             }
+            [item.item layoutIfNeeded];
         }
         else if (!item.displaying) { /* Hide */
             if (_delegate && [_delegate respondsToSelector:@selector(selectorView:didEndDisplayingViewItem:atIndex:)]) {
                 [_delegate selectorView:self didEndDisplayingViewItem:item.item atIndex:index];
             }
+            [item resetItem];
         }
-    
-        /* 3. updateLayout if any change */
-        [item.item layoutIfNeeded];
     }
 }
 
@@ -147,6 +172,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (BOOL)reloadData {
     BOOL out = !_items || ![_items selectedItem]; /* reload only if nothing selected */
     if (out) {
+        [self layoutViews   ];
         [self reloadAllItems];
         [self reloadView    ];
         /* ToDo: try to adjust content offset */
@@ -157,7 +183,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (void)reloadView {
     [self resetAllItemTransforms];
     [self updateLayout          ];
-    [self scrollViewDidScroll:_scrollView];
+    [self handleScrollChange    ];
 }
 
 #pragma mark - view item activation/deactivation
@@ -175,15 +201,16 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self checkItemDisplayingStates];
-    [self transformDisplayingItems ];
+    [self handleScrollChange];
 }
 
 - (void)checkItemDisplayingStates {
-    for (MZSelectorItem *item in _items) {
-        if ((!item.displaying &&  [self isItemDisplaying:item])     /* Show */
-         || ( item.displaying && ![self isItemDisplaying:item])) {  /* Hide */
-            [item toggleDisplaying];
+    if (self.hasViewSize) {
+        for (MZSelectorItem *item in _items) {
+            if ((!item.displaying &&  [self isItemDisplaying:item])     /* Show */
+             || ( item.displaying && ![self isItemDisplaying:item])) {  /* Hide */
+                [item toggleDisplaying];
+            }
         }
     }
 }
@@ -202,6 +229,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     UIView *view = gesture.view;
     view = [view hitTest:[gesture locationInView:view] withEvent:nil];
     
+    /* ToDo: improve !!! */
     view = view.superview;
     while (view && ![view isKindOfClass:MZSelectorViewItem.class]) {
         view = view.superview;
@@ -301,18 +329,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     }
 }
 
-- (NSUInteger)numberOfItems {
-    return _dataSource != nil ?
-        [_dataSource numberOfItemsInSelectorView:self] :
-        0;
-}
-
-- (CGFloat)minimalItemDistance {
-    return _layout && [_layout respondsToSelector:@selector(minimalItemDistanceInSelectorView:)] ?
-        [_layout minimalItemDistanceInSelectorView:self] :
-        MAX(20.0, self.bounds.size.height / 4);
-}
-
 - (UIEdgeInsets)itemInsets {
     UIEdgeInsets insets = kDefaultItemInsets;
     if (_layout) {
@@ -324,6 +340,10 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         }
     }
     return insets;
+}
+
+- (BOOL)hasViewSize {
+    return !CGSizeEqualToSize(self.bounds.size, CGSizeZero);
 }
 
 @end
@@ -340,14 +360,14 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (CGFloat)adjustedItemDistance {
-    NSUInteger   numberOfItems = self.numberOfItems;
-    UIEdgeInsets itemInsets    = self.itemInsets;
-    CGFloat      viewHeight    = self.bounds.size.height;
+    NSUInteger   numberOfItems   = self.numberOfItems;
+    UIEdgeInsets itemInsets      = self.itemInsets;
+    CGFloat      viewHeight      = self.bounds.size.height;
     
     return viewHeight < self.adjustedContentHeight ?
         self.minimalItemDistance :
-        (numberOfItems > 1 ?
-            MAX(0, (viewHeight - itemInsets.bottom - itemInsets.top) / (numberOfItems-1)) :
+        (numberOfItems > 0 ?
+            MAX(0, (viewHeight - itemInsets.bottom - itemInsets.top) / numberOfItems) :
             0);
 }
 
@@ -371,10 +391,9 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return [self transformItems:[self displayingItems]];
 }
 
-/* ToDo: fix  */
 - (BOOL)transformItems:(NSArray<MZSelectorItem*>*)items {
     BOOL out = items.count > 0;
-    for (NSUInteger i = 0; out && i < items.count; ++i) {
+    for (NSUInteger i = 0; i < items.count; ++i) {
         out &= [self transformItem:items[i]];
     }
     return out;
@@ -405,12 +424,12 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items {
-    BOOL out = !CGSizeEqualToSize(self.bounds.size, CGSizeZero);
+    BOOL out = self.hasViewSize;
     if (out) {
         NSArray<NSValue*> *frames = self.calculatedFrames;
         for (NSUInteger i = 0; i < items.count; ++i) {
             NSUInteger index = [_items indexOfObject:items[i]];
-            if (index != NSNotFound && index < frames.count/* && [items[i] hasItem]*/) {
+            if (index != NSNotFound && index < frames.count && items[i].hasItem) {
                 items[i].item.frame = frames[index].CGRectValue;
             }
         }
@@ -424,19 +443,19 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)updateLayout {
-    [self calculateDimensions     ];
-    [self calculateAndUpdateFrames];
+    [self calculateAndUpdateDimensions];
+    [self calculateAndUpdateFrames    ];
 }
 
-- (void)calculateDimensions {
+- (void)calculateAndUpdateDimensions {
     [self calculateAndUpdateContentHeight];
     [self calculateItemOrigins           ];
     [self layoutViews];
 }
 
 - (void)calculateAndUpdateFrames {
-    [self layoutAllItems];
-    [self layoutViews   ];
+    [self layoutDisplayingItems];
+    [self layoutViews          ];
 }
 
 - (NSArray<NSValue*>*)calculatedFrames {
@@ -451,24 +470,27 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     [view layoutIfNeeded];
 }
 
+- (void)loadAndDisplayItem:(MZSelectorItem*)item {
+    if (item && [item loadItemIfNeeded]) {
+        [self layoutItems:@[item]];
+    }
+}
+
 #pragma mark - Layout Private
 - (void)calculateAndUpdateContentHeight {
     self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
 }
 
-- (BOOL)calculateItemOrigins {
+- (void)calculateItemOrigins {
     NSUInteger numberOfItems = self.numberOfItems;
-    CGFloat itemDistance  = self.adjustedItemDistance;
+    CGFloat itemDistance = self.adjustedItemDistance;
     CGFloat y = self.itemInsets.top;
     
-    BOOL out = numberOfItems > 0 && itemDistance > 0.1;
-    
+    BOOL out = numberOfItems > 0 && itemDistance > 0.1;    
     for (NSUInteger i = 0; i < numberOfItems; ++i) {
         y += i == 0 ? 0 : itemDistance;
         _items[i].origin = CGPointMake(0,out ? y : 0); /* updates frame also */
     }
-    
-    return out;
 }
 
 @end
@@ -579,6 +601,11 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 
 - (MZScrollInfo *)scrollInfo {
     return _scrollInfo;
+}
+
+- (void)handleScrollChange {
+    [self checkItemDisplayingStates];
+    [self transformDisplayingItems ];
 }
 
 @end
