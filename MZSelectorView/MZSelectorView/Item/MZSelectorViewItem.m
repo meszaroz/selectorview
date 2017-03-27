@@ -99,9 +99,11 @@
 @implementation MZSelectorViewItem(Private)
 
 - (void)setSelectorView:(MZSelectorView *)selectorView {
-    NSAssert(_selectorView == nil, @"Only one selectorView assignment is allowed!");
-    _selectorView = selectorView;
-    [self resetSelected];
+    if (_selectorView != selectorView) {
+        NSAssert(_selectorView == nil, @"Only one selectorView assignment is allowed!");
+        _selectorView = selectorView;
+        [self resetSelected];
+    }
 }
 
 - (MZSelectorView*)selectorView {

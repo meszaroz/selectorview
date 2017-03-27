@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0ADAAA86393B3DEF9FF4679F /* libPods-MZSelectorView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4070D57412E3024C622CBD2 /* libPods-MZSelectorView.a */; };
+		21075F441E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */; };
 		21111FFD1E81C96900E7DC29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 21111FFC1E81C96900E7DC29 /* main.m */; };
 		211120001E81C96900E7DC29 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 21111FFF1E81C96900E7DC29 /* AppDelegate.m */; };
 		211120061E81C96900E7DC29 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 211120041E81C96900E7DC29 /* Main.storyboard */; };
@@ -45,6 +46,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21075F421E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewReusableViewItemHandler.h; path = Selector/Support/MZSelectorViewReusableViewItemHandler.h; sourceTree = "<group>"; };
+		21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewReusableViewItemHandler.m; path = Selector/Support/MZSelectorViewReusableViewItemHandler.m; sourceTree = "<group>"; };
 		21111FF81E81C96900E7DC29 /* MZSelectorView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MZSelectorView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21111FFC1E81C96900E7DC29 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		21111FFE1E81C96900E7DC29 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -113,6 +116,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21075F411E8996F200ECA251 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				21075F421E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.h */,
+				21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */,
+			);
+			name = Support;
+			sourceTree = "<group>";
+		};
 		21111FEF1E81C96800E7DC29 = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +206,7 @@
 		211120381E81CAD200E7DC29 /* Selector */ = {
 			isa = PBXGroup;
 			children = (
+				21075F411E8996F200ECA251 /* Support */,
 				2111204E1E85DB0300E7DC29 /* Handlers */,
 				211120391E81CADC00E7DC29 /* MZScrollInfo.h */,
 				2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */,
@@ -442,6 +455,7 @@
 				211120361E81CACD00E7DC29 /* CALayer+Anchor.m in Sources */,
 				2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */,
 				211120581E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m in Sources */,
+				21075F441E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m in Sources */,
 				2111204A1E81CEEB00E7DC29 /* MZSelectorItem.m in Sources */,
 				21111FFD1E81C96900E7DC29 /* main.m in Sources */,
 				211120531E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m in Sources */,

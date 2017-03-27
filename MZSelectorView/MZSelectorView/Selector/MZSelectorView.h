@@ -74,3 +74,11 @@
 - (BOOL)reloadData;
 
 @end
+
+@interface MZSelectorView(Reusable)
+
+- (void)registerClass:(Class _Nonnull)viewItemClass forViewItemReuseIdentifier:(NSString * _Nonnull)identifier;
+
+- (__kindof MZSelectorViewItem * _Nullable)dequeueReusableViewItemWithIdentifier:(NSString * _Nonnull)identifier;
+
+@end

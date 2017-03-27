@@ -13,6 +13,7 @@
 #import "MZSelectorViewItem.h"
 #import "MZSelectorItem.h"
 #import "MZSelectorViewHandlerController.h"
+#import "MZSelectorViewReusableViewItemHandler.h"
 #import "MZScrollInfo.h"
 #import "CALayer+Anchor.h"
 
@@ -23,7 +24,9 @@
     MZScrollInfo *_scrollInfo;
     UITapGestureRecognizer *_tapGestureRecognizer;
     
-    MZSelectorViewHandlerController *_handlerController;
+    MZSelectorViewHandlerController *_actionHandlerController;
+    
+    MZSelectorViewReusableViewItemHandler *_reusableHandler;
 }
 @end
 
@@ -60,7 +63,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - functions
 - (NSString*)activeSelectionState {
-    return [_handlerController.activeHandler.class name];
+    return [_actionHandlerController.activeHandler.class name];
 }
 
 - (MZSelectorViewItem*)selectedViewItem {
@@ -188,13 +191,13 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - view item activation/deactivation
 - (BOOL)activateViewItemAtIndex:(NSUInteger)index {
-    return [_handlerController activateHandlerWithName:kActivationHandlerName
+    return [_actionHandlerController activateHandlerWithName:kActivationHandlerName
                                         inSelectorView:self
                                      withSelectedIndex:index];
 }
 
 - (BOOL)deactivateActiveViewItem {
-    return [_handlerController activateHandlerWithName:kDefaultHandlerName
+    return [_actionHandlerController activateHandlerWithName:kDefaultHandlerName
                                         inSelectorView:self
                                      withSelectedIndex:NSNotFound];
 }
@@ -246,6 +249,18 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 @end
 
+@implementation MZSelectorView(Reusable)
+
+- (void)registerClass:(Class _Nonnull)viewItemClass forViewItemReuseIdentifier:(NSString * _Nonnull)identifier {
+    [_reusableHandler registerClass:viewItemClass forViewItemReuseIdentifier:identifier];
+}
+
+- (__kindof MZSelectorViewItem * _Nullable)dequeueReusableViewItemWithIdentifier:(NSString * _Nonnull)identifier {
+    return [_reusableHandler dequeueReusableViewItemWithIdentifier:identifier];
+}
+
+@end
+
 @implementation MZSelectorView(Setup)
 
 - (void)setupComponents {
@@ -258,8 +273,9 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)setupHandlers {
-    _handlerController = [[MZSelectorViewHandlerController alloc] initWithIdleHandler:  [MZSelectorViewDefaultHandler    new]
-                                                                 andSelectionHandlers:@[[MZSelectorViewActivationHandler new]]];
+    _actionHandlerController = [[MZSelectorViewHandlerController alloc] initWithIdleHandler:  [MZSelectorViewDefaultHandler    new]
+                                                                       andSelectionHandlers:@[[MZSelectorViewActivationHandler new]]];
+    _reusableHandler = [MZSelectorViewReusableViewItemHandler new];
 }
 
 - (void)setupOrientationChange {
@@ -592,7 +608,7 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 @implementation MZSelectorView(Private)
 
 - (id<MZSelectorViewActionHandler>)activeHandler {
-    return _handlerController.activeHandler;
+    return _actionHandlerController.activeHandler;
 }
 
 - (NSMutableArray<MZSelectorItem *> *)items {
