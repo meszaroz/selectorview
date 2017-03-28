@@ -71,13 +71,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return item ? item.item : nil;
 }
 
-- (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)item {
-    NSInteger index = [self indexOfViewItem:item];
-    return index != NSNotFound ?
-        _items[index].origin :
-        CGPointZero;
-}
-
 - (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index {
     NSUInteger numberOfItems = self.numberOfItems;
     return index < numberOfItems && _items.count == numberOfItems ?
@@ -115,6 +108,27 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return _layout && [_layout respondsToSelector:@selector(minimalItemDistanceInSelectorView:)] ?
         [_layout minimalItemDistanceInSelectorView:self] :
         MAX(20.0, self.bounds.size.height / 4);
+}
+
+- (void)setDataSource:(id<MZSelectorViewDataSource>)dataSource {
+    if (_dataSource != dataSource) {
+        _dataSource = dataSource;
+        [self reloadData];
+    }
+}
+
+- (void)setDelegate:(id<MZSelectorViewDelegate>)delegate {
+    if (_delegate != delegate) {
+        _delegate = delegate;
+        [self reloadView];
+    }
+}
+
+- (void)setLayout:(id<MZSelectorViewDelegateLayout>)layout {
+    if (_layout != layout) {
+        _layout = layout;
+        [self reloadView];
+    }
 }
 
 #pragma mark - MZSelectorItemDelegate
@@ -173,7 +187,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - configure
 - (BOOL)reloadData {
-    BOOL out = !_items || ![_items selectedItem]; /* reload only if nothing selected */
+    BOOL out = _actionHandlerController.idle; /* reload only if idle */
     if (out) {
         [self layoutViews   ];
         [self reloadAllItems];

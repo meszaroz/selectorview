@@ -15,7 +15,9 @@ static NSString *kTransitionSelectionView = @"TransitionSelectionView";
 static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
 
 @interface MZSelectorViewHandlerController() {
+    id<MZSelectorViewActionHandler> _idleHandler;
     NSMutableDictionary<NSString*, id<MZSelectorViewActionHandler>> *_handlers;
+    
     TKStateMachine *_stateMachine;
 }
 @end
@@ -28,6 +30,7 @@ static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
     
     self = [super init];
     if (self) {
+        _idleHandler = idleHandler;
         _handlers = [NSMutableDictionary dictionary];
         
         NSMutableArray<id<MZSelectorViewActionHandler>> *handlers = [NSMutableArray arrayWithObject:idleHandler];
@@ -87,6 +90,14 @@ static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
 
 - (id<MZSelectorViewActionHandler>)activeHandler {
     return _handlers[_stateMachine.currentState.name];
+}
+
+@end
+
+@implementation MZSelectorViewHandlerController(Idle)
+
+- (BOOL)isIdle {
+    return self.activeHandler == _idleHandler;
 }
 
 @end
