@@ -480,7 +480,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (void)calculateAndUpdateDimensions {
     [self calculateAndUpdateContentHeight];
     [self calculateItemOrigins           ];
-    [self layoutViews];
 }
 
 - (void)calculateAndUpdateFrames {
@@ -508,7 +507,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - Layout Private
 - (void)calculateAndUpdateContentHeight {
-    self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
+    _scrollView.contentSize = CGSizeMake(_scrollView.contentSize.width, MAX(self.bounds.size.height, self.adjustedContentHeight));
+    self.contentHeight = _scrollView.contentSize.height;
 }
 
 - (void)calculateItemOrigins {
