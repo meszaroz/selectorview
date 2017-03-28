@@ -83,25 +83,8 @@
     item.contentView.backgroundColor = colors[index%colors.count];
     item.contentView.layer.borderColor = [UIColor whiteColor].CGColor;
     item.contentView.layer.borderWidth = 2;
-/*
+    
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.backgroundColor = [UIColor redColor];
-    [item.contentView addSubview:button];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeTop];
-    [button autoSetDimensionsToSize:CGSizeMake(50, 50)];
-    
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.backgroundColor = [UIColor yellowColor];
-    [item.contentView addSubview:button];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:30];
-    [button autoSetDimensionsToSize:CGSizeMake(50, 50)];
-    [button addTarget:self action:@selector(action) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    return out;*/
-    /*UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.backgroundColor = [UIColor redColor];
     [item.contentView addSubview:button];
     [button autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -114,7 +97,7 @@
     [button autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
     [button autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:30];
     [button autoSetDimensionsToSize:CGSizeMake(50, 50)];
-    [button addTarget:self action:@selector(action2) forControlEvents:UIControlEventTouchUpInside];*/
+    [button addTarget:self action:@selector(action) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformContentLayer:(CALayer* _Nonnull)layer inViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index {

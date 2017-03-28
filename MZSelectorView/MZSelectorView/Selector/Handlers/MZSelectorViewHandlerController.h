@@ -19,3 +19,9 @@
 - (BOOL)activateHandlerWithName:(NSString*)handlerName inSelectorView:(MZSelectorView*)selectorView withSelectedIndex:(NSUInteger)index;
 
 @end
+
+@interface MZSelectorViewHandlerController(Idle)
+
+@property (nonatomic, readonly, getter=isIdle) BOOL idle;
+
+@end

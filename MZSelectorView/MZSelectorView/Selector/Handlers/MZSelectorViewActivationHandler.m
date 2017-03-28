@@ -15,10 +15,23 @@
 NSString* kActivationHandlerName = @"ActivationHandler";
 static const CGFloat kDefaultAnimationDuration = 0.5;
 
+@interface MZSelectorViewActivationHandler() {
+    CGPoint _scrollPosition;
+}
+@end
+
 @implementation MZSelectorViewActivationHandler
 
 + (NSString*)name {
     return kActivationHandlerName;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _scrollPosition = CGPointZero;
+    }
+    return self;
 }
 
 #pragma mark - view item activation/deactivation
@@ -141,36 +154,30 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     return out;
 }
 
-- (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView {
-    /* 1. calculate relative scroll positions for restoring after ex. rotation
-     * - active: returns relative location on screen -> position before activation (relative to screen) */
-    CGPoint scrollPosition = [self.class referenceRelativeScrollPositionInSelectorView:selectorView];
-    
-    /* 2. calculate content height and origins - needed before scroll position adjusting, because it uses the info of the new positions */
-    [selectorView calculateAndUpdateDimensions];
-    
-    /* 3. adjust scroll positions for changed layout */
-    [self.class adjustScrollPositionToReferenceRelativeScrollViewPosition:scrollPosition inSelectorView:selectorView];
+- (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView {
+    return CGSizeMake(selectorView.frame.size.width, MAX(selectorView.bounds.size.height, selectorView.adjustedContentHeight));
 }
 
-#pragma mark - adjust scroll positions for layout
-+ (CGPoint)referenceRelativeScrollPositionInSelectorView:(MZSelectorView *)selectorView {
+- (CGPoint)adjustedContentOffsetOfSelectorView:(MZSelectorView *)selectorView {
+    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
+    MZSelectorItem *item = [selectorView.items selectedItem];
+    CGPoint scrollPosition = _scrollPosition;
+    _scrollPosition = CGPointZero;
+    
+    return item && !CGPointEqualToPoint(scrollPosition, CGPointZero) ?
+        [data contentOffsetOfRelativeScrollViewPosition:scrollPosition inRelationToAbsolutePositionInScrollContent:item.origin] :
+        selectorView.scrollView.contentOffset;
+}
+
+/* calculate relative scroll positions for restoring after ex. rotation
+ * - active: returns relative location on screen -> position before activation (relative to screen) */
+- (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView {
     MZScrollInfoData *data = selectorView.scrollInfo.data[@(selectorView.scrollInfo.activeInterfaceOrientation)];
     MZSelectorItem *item = [selectorView.items selectedItem];
     
-    return item ?
+    _scrollPosition = item ?
         [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:item.origin]: /* active */
-        CGPointZero;                                                                      /* inactive */
-}
-
-+ (void)adjustScrollPositionToReferenceRelativeScrollViewPosition:(CGPoint)position inSelectorView:(MZSelectorView *)selectorView {
-    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
-    MZSelectorItem *item = [selectorView.items selectedItem];
-    
-    if (item) {
-        selectorView.scrollView.contentOffset = [data contentOffsetOfRelativeScrollViewPosition:position
-                                                    inRelationToAbsolutePositionInScrollContent:item.origin];
-    }
+        CGPointZero;
 }
 
 @end

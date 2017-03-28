@@ -69,8 +69,6 @@
 
 - (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index;
 
-- (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)viewItem;
-
 - (BOOL)reloadData;
 
 @end

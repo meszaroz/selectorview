@@ -71,13 +71,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return item ? item.item : nil;
 }
 
-- (CGPoint)originOfViewItem:(MZSelectorViewItem * _Nonnull)item {
-    NSInteger index = [self indexOfViewItem:item];
-    return index != NSNotFound ?
-        _items[index].origin :
-        CGPointZero;
-}
-
 - (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index {
     NSUInteger numberOfItems = self.numberOfItems;
     return index < numberOfItems && _items.count == numberOfItems ?
@@ -173,7 +166,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - configure
 - (BOOL)reloadData {
-    BOOL out = !_items || ![_items selectedItem]; /* reload only if nothing selected */
+    BOOL out = _actionHandlerController.idle; /* reload only if in idle state */
     if (out) {
         [self layoutViews   ];
         [self reloadAllItems];
@@ -442,7 +435,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items {
     BOOL out = self.hasViewSize;
     if (out) {
-        NSArray<NSValue*> *frames = self.calculatedFrames;
+        NSArray<NSValue*> *frames = [self.activeHandler calculatedFramesInSelectorView:self];
         for (NSUInteger i = 0; i < items.count; ++i) {
             NSUInteger index = [_items indexOfObject:items[i]];
             if (index != NSNotFound && index < frames.count && items[i].hasItem) {
@@ -459,23 +452,12 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)updateLayout {
-    [self calculateAndUpdateDimensions];
-    [self calculateAndUpdateFrames    ];
-}
-
-- (void)calculateAndUpdateDimensions {
-    [self calculateAndUpdateContentHeight];
-    [self calculateItemOrigins           ];
-    [self layoutViews];
-}
-
-- (void)calculateAndUpdateFrames {
+    [self updateContentSize    ];
+    [self updateItemOrigins    ];
+    [self updateContentOffset  ];
+    
     [self layoutDisplayingItems];
     [self layoutViews          ];
-}
-
-- (NSArray<NSValue*>*)calculatedFrames {
-    return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
 - (void)layoutViews {
@@ -493,11 +475,18 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - Layout Private
-- (void)calculateAndUpdateContentHeight {
-    self.contentHeight = MAX(self.bounds.size.height, self.adjustedContentHeight);
+- (void)updateContentSize {
+    _scrollView.contentSize = [self.activeHandler calculatedContentSizeOfSelectorView:self];
+    self.contentHeight = _scrollView.contentSize.height;
 }
 
-- (void)calculateItemOrigins {
+- (void)updateContentOffset {
+    if ([self.activeHandler respondsToSelector:@selector(adjustedContentOffsetOfSelectorView:)]) {
+        _scrollView.contentOffset = [self.activeHandler adjustedContentOffsetOfSelectorView:self];
+    }
+}
+
+- (void)updateItemOrigins {
     NSUInteger numberOfItems = self.numberOfItems;
     CGFloat itemDistance = self.adjustedItemDistance;
     CGFloat y = self.itemInsets.top;
