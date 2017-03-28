@@ -17,11 +17,12 @@
 
 + (NSString*)name;
 
-/* ToDo: modify contentSize and contentOffset: needed for insert/delete/reorder animations */
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
+- (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView;
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
 
 @optional
+- (CGPoint)adjustedContentOffsetOfSelectorView:(MZSelectorView *)selectorView;
 - (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index;
 - (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView;
 
@@ -106,6 +107,9 @@
 @end
 
 @interface MZSelectorView(Layout)
+
+@property (nonatomic, readonly) NSArray<NSValue*> *calculatedDefaultOrigins;
+@property (nonatomic, readonly) NSArray<NSValue*> *calculatedFrames;
 
 - (void)updateLayout;
 - (BOOL)layoutAllItems;

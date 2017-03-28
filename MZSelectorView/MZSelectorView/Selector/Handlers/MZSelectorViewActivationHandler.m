@@ -116,8 +116,8 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     
     /* previous */
     for (MZSelectorItem *item in prevItems) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.origin.x,
-                                                           item.origin.y - prevOffset,
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
+                                                           item.defaultOrigin.y - prevOffset,
                                                            selectorView.bounds.size.width,
                                                            selectorView.bounds.size.height)]];
     }
@@ -132,13 +132,18 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     
     /* next */
     for (MZSelectorItem *item in nextItems) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.origin.x,
-                                                           item.origin.y + nextOffset,
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
+                                                           item.defaultOrigin.y + nextOffset,
                                                            selectorView.bounds.size.width,
                                                            selectorView.bounds.size.height)]];
     }
     
     return out;
+}
+
+- (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView {
+    return CGSizeMake(selectorView.scrollView.contentSize.width,
+                      MAX(selectorView.bounds.size.height, selectorView.adjustedContentHeight));
 }
 
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView {
@@ -159,8 +164,8 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     MZSelectorItem *item = [selectorView.items selectedItem];
     
     return item ?
-        [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:item.origin]: /* active */
-        CGPointZero;                                                                      /* inactive */
+        [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:item.defaultOrigin]: /* active */
+        CGPointZero;                                                                             /* inactive */
 }
 
 + (void)adjustScrollPositionToReferenceRelativeScrollViewPosition:(CGPoint)position inSelectorView:(MZSelectorView *)selectorView {
@@ -169,7 +174,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     
     if (item) {
         selectorView.scrollView.contentOffset = [data contentOffsetOfRelativeScrollViewPosition:position
-                                                    inRelationToAbsolutePositionInScrollContent:item.origin];
+                                                    inRelationToAbsolutePositionInScrollContent:item.defaultOrigin];
     }
 }
 

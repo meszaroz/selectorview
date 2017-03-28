@@ -22,13 +22,18 @@ NSString* kDefaultHandlerName = @"DefaulHandler";
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
     
     for (MZSelectorItem *item in selectorView.items) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.origin.x,
-                                                           item.origin.y,
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
+                                                           item.defaultOrigin.y,
                                                            selectorView.bounds.size.width,
                                                            selectorView.bounds.size.height)]];
     }
     
     return out;
+}
+
+- (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView {
+    return CGSizeMake(selectorView.scrollView.contentSize.width,
+                      MAX(selectorView.bounds.size.height, selectorView.adjustedContentHeight));
 }
 
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView {

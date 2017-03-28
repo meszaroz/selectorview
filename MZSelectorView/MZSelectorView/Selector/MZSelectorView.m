@@ -479,16 +479,13 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)calculateAndUpdateDimensions {
     [self calculateAndUpdateContentHeight];
-    [self calculateItemOrigins           ];
+    [self calculateItemDefaultOrigins    ];
+    [self calculateAndAdjustContentOffset];
 }
 
 - (void)calculateAndUpdateFrames {
     [self layoutDisplayingItems];
     [self layoutViews          ];
-}
-
-- (NSArray<NSValue*>*)calculatedFrames {
-    return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
 - (void)layoutViews {
@@ -505,21 +502,43 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     }
 }
 
-#pragma mark - Layout Private
-- (void)calculateAndUpdateContentHeight {
-    _scrollView.contentSize = CGSizeMake(_scrollView.contentSize.width, MAX(self.bounds.size.height, self.adjustedContentHeight));
-    self.contentHeight = _scrollView.contentSize.height;
+#pragma mark - properties
+- (NSArray<NSValue*>*)calculatedFrames {
+    return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
-- (void)calculateItemOrigins {
+- (NSArray<NSValue*>*)calculatedDefaultOrigins {
+    NSMutableArray<NSValue*> *out = [NSMutableArray array];
+    
     NSUInteger numberOfItems = self.numberOfItems;
     CGFloat itemDistance = self.adjustedItemDistance;
     CGFloat y = self.itemInsets.top;
     
-    BOOL out = numberOfItems > 0 && itemDistance > 0.1;    
+    BOOL status = numberOfItems > 0 && itemDistance > 0.1;
     for (NSUInteger i = 0; i < numberOfItems; ++i) {
         y += i == 0 ? 0 : itemDistance;
-        _items[i].origin = CGPointMake(0,out ? y : 0); /* updates frame also */
+        [out addObject:[NSValue valueWithCGPoint:CGPointMake(0,status ? y : 0)]];
+    }
+    
+    return out;
+}
+
+#pragma mark - Layout Private
+- (void)calculateAndUpdateContentHeight {
+    _scrollView.contentSize = [self.activeHandler calculatedContentSizeOfSelectorView:self];
+    self.contentHeight = _scrollView.contentSize.height;
+}
+
+- (void)calculateItemDefaultOrigins {
+    NSArray<NSValue*> *origins = self.calculatedDefaultOrigins;
+    for (NSUInteger i = 0; i < origins.count; ++i) {
+        _items[i].defaultOrigin = origins[i].CGPointValue; /* updates frame */
+    }
+}
+
+- (void)calculateAndAdjustContentOffset {
+    if ([self.activeHandler respondsToSelector:@selector(adjustedContentOffsetOfSelectorView:)]) {
+        _scrollView.contentOffset = [self.activeHandler adjustedContentOffsetOfSelectorView:self];
     }
 }
 
@@ -527,8 +546,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 @implementation MZSelectorView(ShowHide)
 
-static const CGFloat kItemShowDistanceFromEdge = 10.0;
-static const CGFloat kItemHideDistanceFromEdge = 20.0;
+static const CGFloat kItemShowDistanceFromEdge = 40.0;
+static const CGFloat kItemHideDistanceFromEdge = 60.0;
 
 - (CGRect)currentShowFrame {
     return [self currentFrameForEdgeOffset:kItemShowDistanceFromEdge];
@@ -548,8 +567,8 @@ static const CGFloat kItemHideDistanceFromEdge = 20.0;
 - (BOOL)isItemDisplaying:(MZSelectorItem*)item {
     BOOL out = item != nil;
     if (out) {
-        CGRect itemFrame = CGRectMake(item.origin.x,
-                                      item.origin.y,
+        CGRect itemFrame = CGRectMake(item.defaultOrigin.x,
+                                      item.defaultOrigin.y,
                                       self.bounds.size.width,
                                       self.bounds.size.height);
         out = ( item.displaying && CGRectIntersectsRect(self.currentHideFrame, itemFrame))

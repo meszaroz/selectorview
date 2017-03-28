@@ -38,19 +38,19 @@
     return _item;
 }
 
-- (void)setOrigin:(CGPoint)origin {
-    if (!CGPointEqualToPoint(_origin, origin)) {
-        [self willChangeValueForKey:@"origin"];
-        _origin = origin;
-        [self setOriginPrivate];
-        [self  didChangeValueForKey:@"origin"];
+- (void)setDefaultOrigin:(CGPoint)defaultOrigin {
+    if (!CGPointEqualToPoint(_defaultOrigin, defaultOrigin)) {
+        [self willChangeValueForKey:@"defaultOrigin"];
+        _defaultOrigin = defaultOrigin;
+        [self setDefaultOriginPrivate];
+        [self  didChangeValueForKey:@"defaultOrigin"];
     }
 }
 
-- (void)setOriginPrivate {
+- (void)setDefaultOriginPrivate {
     if (_item) {
         CGRect frame = _item.frame;
-        frame.origin = _origin;
+        frame.origin = _defaultOrigin;
         _item.frame = frame;
     }
 }
@@ -75,9 +75,9 @@
 @implementation MZSelectorItem(Reset)
 
 - (void)reset {
-    [self resetItem      ];
-    [self resetOrigin    ];
-    [self resetDisplaying];
+    [self resetItem         ];
+    [self resetDefaultOrigin];
+    [self resetDisplaying   ];
 }
 
 - (void)resetItem {
@@ -87,8 +87,8 @@
     }
 }
 
-- (void)resetOrigin {
-    _origin = CGPointZero;
+- (void)resetDefaultOrigin {
+    _defaultOrigin = CGPointZero;
 }
 
 - (void)resetDisplaying {
