@@ -479,7 +479,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)calculateAndUpdateDimensions {
     [self calculateAndUpdateContentHeight];
-    [self calculateItemDefaultOrigins    ];
+    [self calculateAndUpdateItemOrigins  ];
     [self calculateAndAdjustContentOffset];
 }
 
@@ -529,7 +529,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     self.contentHeight = _scrollView.contentSize.height;
 }
 
-- (void)calculateItemDefaultOrigins {
+- (void)calculateAndUpdateItemOrigins {
     NSArray<NSValue*> *origins = self.calculatedDefaultOrigins;
     for (NSUInteger i = 0; i < origins.count; ++i) {
         _items[i].defaultOrigin = origins[i].CGPointValue; /* updates frame */
