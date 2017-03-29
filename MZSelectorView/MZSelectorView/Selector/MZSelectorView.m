@@ -206,14 +206,14 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 #pragma mark - view item activation/deactivation
 - (BOOL)activateViewItemAtIndex:(NSUInteger)index {
     return [_actionHandlerController activateHandlerWithName:kActivationHandlerName
-                                        inSelectorView:self
-                                     withSelectedIndex:index];
+                                              inSelectorView:self
+                                           withSelectedIndex:index];
 }
 
 - (BOOL)deactivateActiveViewItem {
     return [_actionHandlerController activateHandlerWithName:kDefaultHandlerName
-                                        inSelectorView:self
-                                     withSelectedIndex:NSNotFound];
+                                              inSelectorView:self
+                                           withSelectedIndex:NSNotFound];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -420,7 +420,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (BOOL)transformItem:(MZSelectorItem*)item {
     BOOL out = item && item.hasItem
-        && _layout && [_layout respondsToSelector:@selector(selectorView:transformContentLayer:inViewItem:atIndex:)];
+        && _layout && [_layout respondsToSelector:@selector(selectorView:transformContentLayer:inViewItem:atIndex:)]
+        && (![self.activeHandler respondsToSelector:@selector(shouldTransformItem:inSelectorView:)] || [self.activeHandler shouldTransformItem:item inSelectorView:self]);
     if (out) {
         [_layout selectorView:self
         transformContentLayer:item.item.contentView.layer
@@ -471,12 +472,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     _scrollView.delegate = self;
 }
 
-- (void)calculateAndUpdateDimensions {
-}
-
-- (void)calculateAndUpdateFrames {
-}
-
 - (void)layoutViews {
     UIView *view = self.superview ?
         self.superview :
@@ -496,7 +491,13 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
-- (NSArray<NSValue*>*)calculatedDefaultFrames {
+- (NSArray<NSValue*>*)referenceFrames {
+    return [self.activeHandler respondsToSelector:@selector(referenceFramesInSelectorView:)] ?
+        [self.activeHandler referenceFramesInSelectorView:self] :
+        self.calculatedFrames;
+}
+
+- (NSArray<NSValue*>*)defaultFrames {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
     
     NSUInteger numberOfItems = self.numberOfItems;
@@ -532,7 +533,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)updateItemDisplayingStates {
     if (self.hasViewSize) {
-        NSArray<NSValue*> *frames = self.calculatedDefaultFrames;
+        NSArray<NSValue*> *frames = self.referenceFrames;
         NSAssert(frames.count == _items.count, @"checkItemDisplayingStates - frames count differs from item count");
         for (NSUInteger i = 0; i < frames.count; ++i) {
             MZSelectorItem *item = _items[i];
@@ -549,15 +550,14 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 @implementation MZSelectorView(ShowHide)
 
-static const CGFloat kItemShowDistanceFromEdge = 40.0;
-static const CGFloat kItemHideDistanceFromEdge = 60.0;
+static const CGFloat kItemHideDistanceOffset = 40.0;
 
 - (CGRect)currentShowFrame {
-    return [self currentFrameForEdgeOffset:kItemShowDistanceFromEdge];
+    return [self currentFrameForEdgeOffset:self.minimalItemDistance];
 }
 
 - (CGRect)currentHideFrame {
-    return [self currentFrameForEdgeOffset:kItemHideDistanceFromEdge];
+    return [self currentFrameForEdgeOffset:self.minimalItemDistance + kItemHideDistanceOffset];
 }
 
 - (CGRect)currentFrameForEdgeOffset:(CGFloat)offset {

@@ -22,7 +22,11 @@
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
 
 @optional
+- (NSArray<NSValue*>*)referenceFramesInSelectorView:(MZSelectorView *)selectorView;
 - (CGPoint)adjustedContentOffsetOfSelectorView:(MZSelectorView *)selectorView;
+
+- (BOOL)shouldTransformItem:(MZSelectorItem*)item inSelectorView:(MZSelectorView *)selectorView;
+
 - (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index;
 - (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView;
 
@@ -108,7 +112,8 @@
 
 @interface MZSelectorView(Layout)
 
-@property (nonatomic, readonly) NSArray<NSValue*> *calculatedDefaultFrames;
+@property (nonatomic, readonly) NSArray<NSValue*> *defaultFrames;
+@property (nonatomic, readonly) NSArray<NSValue*> *referenceFrames; /* used by show/hide */
 @property (nonatomic, readonly) NSArray<NSValue*> *calculatedFrames;
 
 - (void)updateLayout;
@@ -117,7 +122,6 @@
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items;
 - (void)layoutViews;
 
-- (void)calculateAndUpdateDimensions;
 - (void)adjustContentOffsetForAppliedRotation;
 
 - (void)loadAndDisplayItem:(MZSelectorItem*)item;

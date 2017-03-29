@@ -23,7 +23,6 @@
 @interface MZSelectorItem : NSObject
 
 @property (strong, nonatomic, readonly) MZSelectorViewItem *item;
-@property (        nonatomic          ) CGPoint defaultOrigin;
 @property (        nonatomic          ) BOOL displaying;
 
 @property (weak, nonatomic) id<MZSelectorItemDelegate> delegate;
@@ -37,7 +36,6 @@
 
 - (void)reset;
 - (void)resetItem;
-- (void)resetDefaultOrigin;
 - (void)resetDisplaying;
 
 @end

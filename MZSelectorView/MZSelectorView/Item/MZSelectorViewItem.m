@@ -59,6 +59,10 @@
     }
 }
 
+- (void)setSelected:(BOOL)selected {
+    _selected = selected;
+}
+
 - (void)setActive:(BOOL)active {
     _active = active;
     [self setActivePrivate];
