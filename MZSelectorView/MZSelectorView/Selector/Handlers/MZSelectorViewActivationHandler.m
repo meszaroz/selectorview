@@ -41,6 +41,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         MZSelectorViewItem *item = selectorView.items[index].item;
         item.selected = YES;
         
+        /* store scroll position of selected item (must be after selected setter) */
         [self storeScrollPositionOfSelectorView:selectorView];
         
         [UIView animateWithDuration:kDefaultAnimationDuration
@@ -59,17 +60,6 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     return out;
 }
 
-/* calculate relative scroll positions for restoring after ex. rotation
- * - active: returns relative location on screen -> position before activation (relative to screen) */
-- (void)storeScrollPositionOfSelectorView:(MZSelectorView*)selectorView {
-    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
-    NSUInteger index = [selectorView.items indexOfSelectedItem];
-    
-    _scrollPosition = [NSValue valueWithCGPoint: index != NSNotFound ?
-                       [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:selectorView.defaultFrames[index].CGRectValue.origin] : /* active */
-                       CGPointZero];                                                                                                               /* inactive */
-}
-
 - (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView {
     return [self selectorView:selectorView deactivateItemAtIndex:[selectorView.items indexOfSelectedItem]];
 }
@@ -78,7 +68,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     BOOL out = selectorView && selectorView.superview && [selectorView selectedViewItem];
     
     if (out) {
-        _scrollPosition = nil;
+        [self clearScrollPosition];
         
         if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willDeactivateViewItemAtIndex:)]) {
             [selectorView.delegate selectorView:selectorView willDeactivateViewItemAtIndex:index];
@@ -104,6 +94,21 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     }
     
     return out;
+}
+
+/* calculate relative scroll positions for restoring after ex. rotation
+ * - active: returns relative location on screen -> position before activation (relative to screen) */
+- (void)storeScrollPositionOfSelectorView:(MZSelectorView*)selectorView {
+    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
+    NSUInteger index = [selectorView.items indexOfSelectedItem];
+    
+    _scrollPosition = [NSValue valueWithCGPoint: index != NSNotFound ?
+                       [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:selectorView.defaultFrames[index].CGRectValue.origin] : /* active */
+                       CGPointZero];                                                                                                               /* inactive */
+}
+
+- (void)clearScrollPosition {
+    _scrollPosition = nil;
 }
 
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
