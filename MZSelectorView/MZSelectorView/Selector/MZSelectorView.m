@@ -458,7 +458,9 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)adjustContentOffsetForAppliedRotation {
-    [self.activeHandler handleRotationOfSelectorView:self];
+    if ([self.activeHandler respondsToSelector:@selector(handleRotationOfSelectorView:)]) {
+        [self.activeHandler handleRotationOfSelectorView:self];
+    }
     [_scrollInfo updateInterfaceOrientation];
 }
 

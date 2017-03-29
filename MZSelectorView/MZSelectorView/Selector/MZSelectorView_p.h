@@ -19,9 +19,10 @@
 
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
 - (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView;
-- (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
 
 @optional
+- (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
+
 - (NSArray<NSValue*>*)referenceFramesInSelectorView:(MZSelectorView *)selectorView;
 - (CGPoint)adjustedContentOffsetOfSelectorView:(MZSelectorView *)selectorView;
 
