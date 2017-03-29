@@ -19,16 +19,7 @@ NSString* kDefaultHandlerName = @"DefaulHandler";
 }
 
 - (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
-    NSMutableArray<NSValue*> *out = [NSMutableArray array];
-    
-    for (MZSelectorItem *item in selectorView.items) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
-                                                           item.defaultOrigin.y,
-                                                           selectorView.bounds.size.width,
-                                                           selectorView.bounds.size.height)]];
-    }
-    
-    return out;
+    return selectorView.calculatedDefaultFrames;
 }
 
 - (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView {

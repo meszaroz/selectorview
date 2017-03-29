@@ -66,7 +66,7 @@
 - (CGRect)currentShowFrame;
 - (CGRect)currentHideFrame;
 - (CGRect)currentFrameForEdgeOffset:(CGFloat)offset;
-- (BOOL)isItemDisplaying:(MZSelectorItem*)item;
+- (BOOL)isItemCurrentlyDisplaying:(BOOL)displaying withFrame:(CGRect)frame;
 
 @end
 
@@ -108,7 +108,7 @@
 
 @interface MZSelectorView(Layout)
 
-@property (nonatomic, readonly) NSArray<NSValue*> *calculatedDefaultOrigins;
+@property (nonatomic, readonly) NSArray<NSValue*> *calculatedDefaultFrames;
 @property (nonatomic, readonly) NSArray<NSValue*> *calculatedFrames;
 
 - (void)updateLayout;

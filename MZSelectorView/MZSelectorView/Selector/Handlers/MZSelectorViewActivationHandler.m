@@ -91,51 +91,48 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     NSUInteger      selectedIndex = [selectorView.items indexOfSelectedItem];
     MZSelectorItem *selectedItem  = [selectorView.items selectedItem       ];
     
-    NSMutableArray<MZSelectorItem*> *prevItems = [NSMutableArray array];
-    NSMutableArray<MZSelectorItem*> *nextItems = [NSMutableArray array];
+    NSArray<NSValue*> *defaultFrames = selectorView.calculatedDefaultFrames;
     
-    for (NSUInteger i = 0; i < selectorView.items.count; ++i) {
-        /**/ if (i < selectedIndex) { [prevItems addObject:selectorView.items[i]]; }
-        else if (i > selectedIndex) { [nextItems addObject:selectorView.items[i]]; }
+    NSMutableArray<NSValue*> *prevFrames = [NSMutableArray array];
+    NSMutableArray<NSValue*> *nextFrames = [NSMutableArray array];
+    NSValue                  *currFrame  = nil;
+    
+    for (NSUInteger i = 0; i < defaultFrames.count; ++i) {
+        /**/ if (i < selectedIndex) { [prevFrames addObject:defaultFrames[i]]; }
+        else if (i > selectedIndex) { [nextFrames addObject:defaultFrames[i]]; }
+        else if (!currFrame       ) {  currFrame = defaultFrames[i];           }
     }
     
     CGFloat prevOffset = 0.0;
     CGFloat nextOffset = 0.0;
     
     if (selectedItem) {
-        MZSelectorViewItem * selectedViewItem = selectedItem.item;
-        MZSelectorViewItem *firstNextViewItem = nextItems.count > 0 && nextItems.firstObject.hasItem ?
-            nextItems.firstObject.item :
-            nil;
-        
-        prevOffset = [selectedViewItem convertPoint:selectedViewItem.bounds.origin toView:selectorView].y;
-        nextOffset = firstNextViewItem ?
-            selectorView.bounds.size.height - [selectedViewItem convertPoint:firstNextViewItem.bounds.origin toView:selectorView].y :
-            0;
+        prevOffset = currFrame ? currFrame.CGRectValue.origin.y - selectorView.scrollView.contentOffset.y                                   : 0.0;
+        nextOffset = currFrame ? selectorView.bounds.size.height + selectorView.scrollView.contentOffset.y - currFrame.CGRectValue.origin.y : 0.0;
     }
     
     /* previous */
-    for (MZSelectorItem *item in prevItems) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
-                                                           item.defaultOrigin.y - prevOffset,
-                                                           selectorView.bounds.size.width,
-                                                           selectorView.bounds.size.height)]];
+    for (NSValue *value in prevFrames) {
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(value.CGRectValue.origin.x,
+                                                           value.CGRectValue.origin.y - prevOffset,
+                                                           value.CGRectValue.size.width,
+                                                           value.CGRectValue.size.height)]];
     }
     
     /* selected */
     if (selectedItem) {
         [out addObject:[NSValue valueWithCGRect:CGRectMake(0.0,
                                                            selectorView.scrollView.contentOffset.y,
-                                                           selectorView.bounds.size.width,
-                                                           selectorView.bounds.size.height)]];
+                                                           currFrame.CGRectValue.size.width,
+                                                           currFrame.CGRectValue.size.height)]];
     }
     
     /* next */
-    for (MZSelectorItem *item in nextItems) {
-        [out addObject:[NSValue valueWithCGRect:CGRectMake(item.defaultOrigin.x,
-                                                           item.defaultOrigin.y + nextOffset,
-                                                           selectorView.bounds.size.width,
-                                                           selectorView.bounds.size.height)]];
+    for (NSValue *value in nextFrames) {
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(value.CGRectValue.origin.x,
+                                                           value.CGRectValue.origin.y + nextOffset,
+                                                           value.CGRectValue.size.width,
+                                                           value.CGRectValue.size.height)]];
     }
     
     return out;

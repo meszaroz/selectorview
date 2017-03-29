@@ -221,17 +221,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     [self handleScrollChange];
 }
 
-- (void)checkItemDisplayingStates {
-    if (self.hasViewSize) {
-        for (MZSelectorItem *item in _items) {
-            if ((!item.displaying &&  [self isItemDisplaying:item])     /* Show */
-             || ( item.displaying && ![self isItemDisplaying:item])) {  /* Hide */
-                [item toggleDisplaying];
-            }
-        }
-    }
-}
-
 #pragma mark - orientation change
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     /* execute only once */
@@ -473,19 +462,19 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)updateLayout {
-    [self calculateAndUpdateDimensions];
-    [self calculateAndUpdateFrames    ];
+    _scrollView.delegate = nil;
+    [self updateContentSize    ];
+    [self updateContentOffset  ];
+    [self updateItemDisplayingStates];
+    [self layoutDisplayingItems];
+    [self layoutViews          ];
+    _scrollView.delegate = self;
 }
 
 - (void)calculateAndUpdateDimensions {
-    [self calculateAndUpdateContentHeight];
-    [self calculateAndUpdateItemOrigins  ];
-    [self calculateAndAdjustContentOffset];
 }
 
 - (void)calculateAndUpdateFrames {
-    [self layoutDisplayingItems];
-    [self layoutViews          ];
 }
 
 - (void)layoutViews {
@@ -507,7 +496,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
-- (NSArray<NSValue*>*)calculatedDefaultOrigins {
+- (NSArray<NSValue*>*)calculatedDefaultFrames {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
     
     NSUInteger numberOfItems = self.numberOfItems;
@@ -517,28 +506,42 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     BOOL status = numberOfItems > 0 && itemDistance > 0.1;
     for (NSUInteger i = 0; i < numberOfItems; ++i) {
         y += i == 0 ? 0 : itemDistance;
-        [out addObject:[NSValue valueWithCGPoint:CGPointMake(0,status ? y : 0)]];
+        [out addObject:[NSValue valueWithCGRect:CGRectMake(0, status ? y : 0, self.bounds.size.width, self.bounds.size.height)]];
     }
     
     return out;
 }
 
 #pragma mark - Layout Private
-- (void)calculateAndUpdateContentHeight {
-    _scrollView.contentSize = [self.activeHandler calculatedContentSizeOfSelectorView:self];
-    self.contentHeight = _scrollView.contentSize.height;
-}
-
-- (void)calculateAndUpdateItemOrigins {
-    NSArray<NSValue*> *origins = self.calculatedDefaultOrigins;
-    for (NSUInteger i = 0; i < origins.count; ++i) {
-        _items[i].defaultOrigin = origins[i].CGPointValue; /* updates frame */
+- (void)updateContentSize {
+    CGSize newSize = [self.activeHandler calculatedContentSizeOfSelectorView:self];
+    if (!CGSizeEqualToSize(newSize, _scrollView.contentSize)) {
+        _scrollView.contentSize = newSize;
+        self.contentHeight = newSize.height;
     }
 }
 
-- (void)calculateAndAdjustContentOffset {
+- (void)updateContentOffset {
     if ([self.activeHandler respondsToSelector:@selector(adjustedContentOffsetOfSelectorView:)]) {
-        _scrollView.contentOffset = [self.activeHandler adjustedContentOffsetOfSelectorView:self];
+        CGPoint newOffset = [self.activeHandler adjustedContentOffsetOfSelectorView:self];
+        if (!CGPointEqualToPoint(newOffset, _scrollView.contentOffset)) {
+            _scrollView.contentOffset = newOffset;
+        }
+    }
+}
+
+- (void)updateItemDisplayingStates {
+    if (self.hasViewSize) {
+        NSArray<NSValue*> *frames = self.calculatedDefaultFrames;
+        NSAssert(frames.count == _items.count, @"checkItemDisplayingStates - frames count differs from item count");
+        for (NSUInteger i = 0; i < frames.count; ++i) {
+            MZSelectorItem *item = _items[i];
+            CGRect  defaultFrame = frames[i].CGRectValue;
+            if ((!item.displaying &&  [self isItemCurrentlyDisplaying:item.displaying withFrame:defaultFrame])     /* Show */
+             || ( item.displaying && ![self isItemCurrentlyDisplaying:item.displaying withFrame:defaultFrame])) {  /* Hide */
+                [item toggleDisplaying];
+            }
+        }
     }
 }
 
@@ -564,17 +567,9 @@ static const CGFloat kItemHideDistanceFromEdge = 60.0;
                       self.bounds.size.height + 2 * offset);
 }
 
-- (BOOL)isItemDisplaying:(MZSelectorItem*)item {
-    BOOL out = item != nil;
-    if (out) {
-        CGRect itemFrame = CGRectMake(item.defaultOrigin.x,
-                                      item.defaultOrigin.y,
-                                      self.bounds.size.width,
-                                      self.bounds.size.height);
-        out = ( item.displaying && CGRectIntersectsRect(self.currentHideFrame, itemFrame))
-           || (!item.displaying && CGRectIntersectsRect(self.currentShowFrame, itemFrame));
-    }    
-    return out;
+- (BOOL)isItemCurrentlyDisplaying:(BOOL)displaying withFrame:(CGRect)frame {
+    return ( displaying && CGRectIntersectsRect(self.currentHideFrame, frame))
+        || (!displaying && CGRectIntersectsRect(self.currentShowFrame, frame));
 }
 
 @end
@@ -653,8 +648,8 @@ static const CGFloat kItemHideDistanceFromEdge = 60.0;
 }
 
 - (void)handleScrollChange {
-    [self checkItemDisplayingStates];
-    [self transformDisplayingItems ];
+    [self updateItemDisplayingStates];
+    [self transformDisplayingItems  ];
 }
 
 @end
