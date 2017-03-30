@@ -1,5 +1,5 @@
 //
-//  MZScrollInfo.h
+//  MZSelectorItem.h
 //  MZScrollView
 //
 //  Created by Mészáros Zoltán on 2017. 03. 21..
@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+@class MZSelectorView;
 @class MZSelectorItem;
 @class MZSelectorViewItem;
 
@@ -22,13 +23,16 @@
 /* object */
 @interface MZSelectorItem : NSObject
 
+@property (nonatomic, getter=isSelected  ) BOOL selected;
+@property (nonatomic, getter=isActive    ) BOOL active;
+@property (nonatomic, getter=isDisplaying) BOOL displaying;
+
 @property (strong, nonatomic, readonly) MZSelectorViewItem *item;
-@property (        nonatomic          ) BOOL displaying;
+@property (weak  , nonatomic, readonly) UIView<MZSelectorItemDelegate> *view;
 
-@property (weak, nonatomic) id<MZSelectorItemDelegate> delegate;
-
-+ (instancetype)itemWithDelegate:(id<MZSelectorItemDelegate>)delegate;
-- (instancetype)initWithDelegate:(id<MZSelectorItemDelegate>)delegate;
++ (instancetype)itemWithView:(UIView<MZSelectorItemDelegate>*)view;
+- (instancetype)initWithView:(UIView<MZSelectorItemDelegate>*)view;
+- (instancetype)__unavailable init;
 
 @end
 
@@ -36,7 +40,6 @@
 
 - (void)reset;
 - (void)resetItem;
-- (void)resetDisplaying;
 
 @end
 

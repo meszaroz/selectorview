@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "MZSelectorViewItem.h"
 
-@class MZSelectorView;
+@class MZSelectorItem;
 
 @interface MZSelectorViewItem(Private)
 
 @property (nonatomic, getter=isActive) BOOL active;
-@property (weak, nonatomic) MZSelectorView *selectorView;
+@property (weak, nonatomic) MZSelectorItem *item;
 
 @end

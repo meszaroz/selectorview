@@ -141,8 +141,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
             
             NSAssert([out isKindOfClass:MZSelectorViewItem.class], @"Unsupported Item type!");
             
-            out.selectorView = self;
-            
+            out.item = item;            
             [self addViewItemToScrollView:out atIndex:index];
         }
     }
@@ -593,7 +592,7 @@ static const CGFloat kItemHideDistanceOffset = 40.0;
     if (out) {
         NSUInteger numberOfItems = self.numberOfItems;
         for (NSUInteger i = 0; i < numberOfItems; ++i) {
-            [_items addObject:[MZSelectorItem itemWithDelegate:self]];
+            [_items addObject:[MZSelectorItem itemWithView:self]];
         }
     }
     return out;

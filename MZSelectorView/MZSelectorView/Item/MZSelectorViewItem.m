@@ -7,20 +7,16 @@
 //
 
 #import "PureLayout.h"
-#import "MZSelectorView_p.h"
-#import "MZSelectorView.h"
+#import "MZSelectorItem.h"
 #import "MZSelectorViewItem_p.h"
 #import "MZSelectorViewItem.h"
 #import "CALayer+Anchor.h"
 #import "UIView+UserInteraction.h"
 
 @interface MZSelectorViewItem() {
-    __weak MZSelectorView *_selectorView;
-    
-    BOOL _active;
+    __weak MZSelectorItem *_item;
     UIView *_activeView;
 }
-
 @end
 
 @implementation MZSelectorViewItem
@@ -49,7 +45,7 @@
     [self addSubview:_contentView];
     _activeView = _contentView;
     
-    self.selectorView = nil;
+    self.item = nil;
 }
 
 - (void)setFrame:(CGRect)frame {
@@ -60,18 +56,38 @@
 }
 
 - (void)setSelected:(BOOL)selected {
-    _selected = selected;
+    if (_item) {
+        _item.selected = selected;
+    }
+}
+
+- (BOOL)isSelected {
+    return _item && _item.isSelected;
+}
+
+@end
+
+@implementation MZSelectorViewItem(Private)
+
+- (void)setItem:(MZSelectorItem *)item {
+    _item = item;
+}
+
+- (MZSelectorItem*)item {
+    return _item;
 }
 
 - (void)setActive:(BOOL)active {
-    _active = active;
-    [self setActivePrivate];
+    if (_item) {
+        _item.active = active;
+        [self setActivePrivate];
+    }
 }
 
 - (void)setActivePrivate {
-    if (_selectorView) {
+    if (_item) {
         static CGPoint lastAnchorPoint = { 0.5, 0.5 };
-        /**/ if ( _active && _selectorView.superview) {
+        /**/ if ( _item.active && _item.view.superview) {
             [_contentView removeFromSuperview];
             
             _activeView = _contentView;
@@ -79,12 +95,12 @@
             
             lastAnchorPoint = _activeView.layer.anchorPoint;
             [_activeView.layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.5)];
-            [_selectorView addSubview:_activeView];
+            [_item.view addSubview:_activeView];
             [_activeView autoPinEdgesToSuperviewEdges];
             
             [_activeView setSubviewUserInteractionsEnabled:YES];
         }
-        else if (!_active) {
+        else if (!_item.active) {
             [_activeView removeFromSuperview];
             
             _contentView = _activeView;
@@ -94,33 +110,12 @@
             [_contentView.layer setCorrectedAnchorPoint:lastAnchorPoint];
             
             [_contentView setSubviewUserInteractionsEnabled:NO];
-        }        
+        }
     }
-}
-
-@end
-
-@implementation MZSelectorViewItem(Private)
-
-- (void)setSelectorView:(MZSelectorView *)selectorView {
-    if (_selectorView != selectorView) {
-        NSAssert(_selectorView == nil, @"Only one selectorView assignment is allowed!");
-        _selectorView = selectorView;
-        [self resetSelected];
-    }
-}
-
-- (MZSelectorView*)selectorView {
-    return _selectorView;
-}
-
-- (void)resetSelected {
-    self.selected = NO;
-    self.active   = NO;
 }
 
 - (BOOL)isActive {
-    return _active;
+    return _item && _item.active;
 }
 
 @end

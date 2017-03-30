@@ -6,6 +6,7 @@
 //  Copyright © 2017. Mészáros Zoltán. All rights reserved.
 //
 
+#import "MZSelectorView.h"
 #import "MZSelectorItem.h"
 #import "MZSelectorViewItem.h"
 
@@ -16,21 +17,18 @@
 
 @implementation MZSelectorItem
 
-+ (instancetype)itemWithDelegate:(id<MZSelectorItemDelegate>)delegate {
-    return [[self alloc] initWithDelegate:delegate];
++ (instancetype)itemWithView:(UIView<MZSelectorItemDelegate> *)view {
+    return [[self alloc] initWithView:view];
 }
 
-- (instancetype)initWithDelegate:(id<MZSelectorItemDelegate>)delegate {
+- (instancetype)initWithView:(UIView<MZSelectorItemDelegate> *)view {
+    NSAssert(view != nil, @"SelectorView parent is needed!");
     self = [super init];
     if (self) {
-        _delegate = delegate;
+        _view = view;
         [self reset];
     }
     return self;
-}
-
-- (instancetype)init {
-    return [self initWithDelegate:nil];
 }
 
 - (MZSelectorViewItem*)item {
@@ -48,8 +46,22 @@
 }
 
 - (void)setDisplayingPrivate {
-    if (_delegate) {
-        [_delegate displayStatusChangedOfSelectorItem:self];
+    [_view displayStatusChangedOfSelectorItem:self];
+}
+
+- (void)setSelected:(BOOL)selected {
+    if (_selected != selected) {
+        [self willChangeValueForKey:@"selected"];
+        _selected = selected;
+        [self  didChangeValueForKey:@"selected"];
+    }
+}
+
+- (void)setActive:(BOOL)active {
+    if (_active != active) {
+        [self willChangeValueForKey:@"active"];
+        _active = active;
+        [self  didChangeValueForKey:@"active"];
     }
 }
 
@@ -59,6 +71,8 @@
 
 - (void)reset {
     [self resetItem      ];
+    [self resetSelected  ];
+    [self resetActive    ];
     [self resetDisplaying];
 }
 
@@ -67,6 +81,14 @@
         [_item removeFromSuperview];
         _item = nil;
     }
+}
+
+- (void)resetSelected {
+    self.selected = NO;
+}
+
+- (void)resetActive {
+    self.active = NO;
 }
 
 - (void)resetDisplaying {
@@ -82,10 +104,10 @@
 }
 
 - (BOOL)loadItemIfNeeded {
-    BOOL out = !self.hasItem && _delegate;
+    BOOL out = !self.hasItem;
     if (out) {
         [self willChangeValueForKey:@"item"];
-        _item = [_delegate createSelectorViewItemForSelectorItem:self];
+        _item = [_view createSelectorViewItemForSelectorItem:self];
         [self  didChangeValueForKey:@"item"];
     }
     return out && _item;
