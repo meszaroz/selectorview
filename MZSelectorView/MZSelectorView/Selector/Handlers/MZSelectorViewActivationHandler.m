@@ -44,15 +44,15 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
             [selectorView.delegate selectorView:selectorView willActivateViewItemAtIndex:index];
         }
         
-        MZSelectorViewItem *item = selectorView.items[index].item;
+        MZSelectorItem *item = selectorView.items[index];
         item.selected = YES;
         
         /* store scroll position of selected item (must be after selected setter) */
-        [self storeScrollPositionOfSelectorView:selectorView];
+        [self storeScrollPositionOfItemAtIndex:index inSelectorView:selectorView];
         
         [UIView animateWithDuration:kDefaultAnimationDuration
                          animations:^{
-                             [selectorView resetItemTransform:selectorView.items[index]];
+                             [selectorView resetItemTransform:item];
                              [selectorView updateLayout];
                          }
                          completion:^(BOOL finished) {
@@ -86,7 +86,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         
         /* ToDo: reapply transform for other views */
         
-        MZSelectorViewItem *item = selectorView.items[index].item;
+        MZSelectorItem *item = selectorView.items[index];
         item.active   = NO;
         item.selected = NO;
         
@@ -109,7 +109,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 }
 
 - (BOOL)shouldTransformItem:(MZSelectorItem *)item inSelectorView:(MZSelectorView *)selectorView {
-    return !item.isSelected;
+    return !item.selected;
 }
 
 - (void)updateFrame:(CADisplayLink*)displayLink {
@@ -117,10 +117,8 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 
 /* calculate relative scroll positions for restoring after ex. rotation
  * - active: returns relative location on screen -> position before activation (relative to screen) */
-- (void)storeScrollPositionOfSelectorView:(MZSelectorView*)selectorView {
-    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];
-    NSUInteger index = [selectorView.items indexOfSelectedItem];
-    
+- (void)storeScrollPositionOfItemAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView*)selectorView {
+    MZScrollInfoData *data = selectorView.scrollInfo.data[@([[UIApplication sharedApplication] statusBarOrientation])];    
     _scrollPosition = [NSValue valueWithCGPoint: index != NSNotFound ?
                        [data relativePositionInScrollViewOfAbsolutePositionInScrollContent:selectorView.defaultFrames[index].CGRectValue.origin] : /* active */
                        CGPointZero];                                                                                                               /* inactive */
