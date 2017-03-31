@@ -11,9 +11,30 @@
 #import "MZSelectorViewItem.h"
 #import "CALayer+Anchor.h"
 
-@interface MZSelectorViewController () <MZSelectorViewDelegate, MZSelectorViewDataSource, MZSelectorViewDelegateLayout> {
+@interface MZCustomSelectorViewItem : MZSelectorViewItem
+
+@property (strong, nonatomic, readonly) UIButton *button;
+
+@end
+
+@implementation MZCustomSelectorViewItem
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        _button = [UIButton buttonWithType:UIButtonTypeCustom];
+        _button.backgroundColor = [UIColor yellowColor];
+        [self.contentView addSubview:_button];
+        [_button autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
+        [_button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:30];
+        [_button autoSetDimensionsToSize:CGSizeMake(50, 50)];
+    }
+    return self;
 }
 
+@end
+
+@interface MZSelectorViewController () <MZSelectorViewDelegate, MZSelectorViewDataSource, MZSelectorViewDelegateLayout>
 @end
 
 @implementation MZSelectorViewController
@@ -23,7 +44,7 @@
     _selectorView.delegate   = self;
     _selectorView.dataSource = self;
     _selectorView.layout     = self;
-    [_selectorView registerClass:MZSelectorViewItem.class forViewItemReuseIdentifier:@"ViewItem"];
+    [_selectorView registerClass:MZCustomSelectorViewItem.class forViewItemReuseIdentifier:@"ViewItem"];
     [self.view addSubview:_selectorView];
     [_selectorView autoPinEdgesToSuperviewEdges];
 }
@@ -84,20 +105,7 @@
     item.contentView.layer.borderColor = [UIColor whiteColor].CGColor;
     item.contentView.layer.borderWidth = 2;
 
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.backgroundColor = [UIColor redColor];
-    [item.contentView addSubview:button];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeTop];
-    [button autoSetDimensionsToSize:CGSizeMake(50, 50)];
-    
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.backgroundColor = [UIColor yellowColor];
-    [item.contentView addSubview:button];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:30];
-    [button autoSetDimensionsToSize:CGSizeMake(50, 50)];
-    [button addTarget:self action:@selector(action) forControlEvents:UIControlEventTouchUpInside];
+    [((MZCustomSelectorViewItem*)item).button addTarget:self action:@selector(action) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformContentLayer:(CALayer* _Nonnull)layer inViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index {

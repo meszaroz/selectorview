@@ -23,7 +23,7 @@ NSString* kDefaultHandlerName = @"DefaulHandler";
     return kDefaultHandlerName;
 }
 
-- (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
+- (CGRectArray*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
     return selectorView.defaultFrames;
 }
 
@@ -32,7 +32,7 @@ NSString* kDefaultHandlerName = @"DefaulHandler";
                       MAX(selectorView.bounds.size.height, selectorView.adjustedContentHeight));
 }
 
-- (NSArray<NSValue*>*)referenceFramesInSelectorView:(MZSelectorView *)selectorView {
+- (CGRectArray*)referenceFramesInSelectorView:(MZSelectorView *)selectorView {
     return selectorView.defaultFrames;
 }
 

@@ -13,17 +13,19 @@
 @class MZSelectorViewItem;
 @class MZScrollInfo;
 
+typedef NSArray<NSValue*> CGRectArray;
+
 @protocol MZSelectorViewActionHandler<NSObject>
 
 + (NSString*)name;
 
-- (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
+- (CGRectArray*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView;
 - (CGSize)calculatedContentSizeOfSelectorView:(MZSelectorView *)selectorView;
 
 @optional
 - (void)handleRotationOfSelectorView:(MZSelectorView *)selectorView;
 
-- (NSArray<NSValue*>*)referenceFramesInSelectorView:(MZSelectorView *)selectorView;
+- (CGRectArray*)referenceFramesInSelectorView:(MZSelectorView *)selectorView;
 - (CGPoint)adjustedContentOffsetOfSelectorView:(MZSelectorView *)selectorView;
 
 - (BOOL)shouldTransformItem:(MZSelectorItem*)item inSelectorView:(MZSelectorView *)selectorView;
@@ -113,9 +115,9 @@
 
 @interface MZSelectorView(Layout)
 
-@property (nonatomic, readonly) NSArray<NSValue*> *defaultFrames;
-@property (nonatomic, readonly) NSArray<NSValue*> *referenceFrames; /* used by show/hide */
-@property (nonatomic, readonly) NSArray<NSValue*> *calculatedFrames;
+@property (nonatomic, readonly) CGRectArray *defaultFrames;
+@property (nonatomic, readonly) CGRectArray *referenceFrames; /* used by show/hide */
+@property (nonatomic, readonly) CGRectArray *calculatedFrames;
 
 - (void)updateLayout;
 - (BOOL)layoutAllItems;

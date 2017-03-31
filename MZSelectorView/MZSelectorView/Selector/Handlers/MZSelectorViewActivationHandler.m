@@ -18,6 +18,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 
 @interface MZSelectorViewActivationHandler() {
     NSValue *_scrollPosition;
+    __weak MZSelectorView *_selectorView;
 }
 @end
 
@@ -32,7 +33,12 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     BOOL out = selectorView && selectorView.superview && ![selectorView.items selectedItem] && index < selectorView.items.count;
     
     if (out) {
+        _selectorView = selectorView;
+        
         selectorView.scrollView.scrollEnabled = NO;
+        
+        CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateFrame:)];
+        [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
         
         if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willActivateViewItemAtIndex:)]) {
             [selectorView.delegate selectorView:selectorView willActivateViewItemAtIndex:index];
@@ -50,6 +56,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
                              [selectorView updateLayout];
                          }
                          completion:^(BOOL finished) {
+                             [displayLink invalidate];
                              item.active = YES;
                              if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
                                  [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
@@ -70,6 +77,9 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     if (out) {
         [self clearScrollPosition];
         
+        CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateFrame:)];
+        [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+        
         if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:willDeactivateViewItemAtIndex:)]) {
             [selectorView.delegate selectorView:selectorView willDeactivateViewItemAtIndex:index];
         }
@@ -86,6 +96,8 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
                              [selectorView transformDisplayingItems];
                          }
                          completion:^(BOOL finished) {
+                             [displayLink invalidate];
+                             _selectorView = nil;
                              selectorView.scrollView.scrollEnabled = YES;
                              if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didDeactivateViewItemAtIndex:)]) {
                                  [selectorView.delegate selectorView:selectorView didDeactivateViewItemAtIndex:index];
@@ -94,6 +106,13 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     }
     
     return out;
+}
+
+- (BOOL)shouldTransformItem:(MZSelectorItem *)item inSelectorView:(MZSelectorView *)selectorView {
+    return !item.isSelected;
+}
+
+- (void)updateFrame:(CADisplayLink*)displayLink {
 }
 
 /* calculate relative scroll positions for restoring after ex. rotation
@@ -111,25 +130,21 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     _scrollPosition = nil;
 }
 
-- (NSArray<NSValue*>*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
+- (CGRectArray*)calculatedFramesInSelectorView:(MZSelectorView *)selectorView {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
     
-    NSUInteger      selectedIndex = [selectorView.items indexOfSelectedItem];
-    MZSelectorItem *selectedItem  = [selectorView.items selectedItem       ];
+    NSUInteger selectedIndex = [selectorView.items indexOfSelectedItem];
     
-    NSArray<NSValue*> *defaultFrames = selectorView.referenceFrames;
-    NSValue *currFrame  = selectedIndex != NSNotFound ? defaultFrames[selectedIndex] : nil;;
+    CGRectArray *referenceFrames = selectorView.referenceFrames;
+    CGRect currentFrame  = selectedIndex != NSNotFound ?
+        referenceFrames[selectedIndex].CGRectValue :
+        CGRectNull;
     
-    CGFloat prevOffset = 0.0;
-    CGFloat nextOffset = 0.0;
+    CGFloat prevOffset = !CGRectIsNull(currentFrame) ? currentFrame.origin.y - selectorView.scrollView.contentOffset.y                                   : 0.0;
+    CGFloat nextOffset = !CGRectIsNull(currentFrame) ? selectorView.bounds.size.height + selectorView.scrollView.contentOffset.y - currentFrame.origin.y : 0.0;
     
-    if (selectedItem) {
-        prevOffset = currFrame ? currFrame.CGRectValue.origin.y - selectorView.scrollView.contentOffset.y                                   : 0.0;
-        nextOffset = currFrame ? selectorView.bounds.size.height + selectorView.scrollView.contentOffset.y - currFrame.CGRectValue.origin.y : 0.0;
-    }
-    
-    for (NSUInteger i = 0; i < defaultFrames.count; ++i) {
-        NSValue *value = defaultFrames[i];
+    for (NSUInteger i = 0; i < referenceFrames.count; ++i) {
+        NSValue *value = referenceFrames[i];
         /**/ if (i < selectedIndex) {
             [out addObject:[NSValue valueWithCGRect:CGRectMake(value.CGRectValue.origin.x,
                                                                value.CGRectValue.origin.y - prevOffset,
@@ -145,15 +160,15 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         else {
             [out addObject:[NSValue valueWithCGRect:CGRectMake(0.0,
                                                                selectorView.scrollView.contentOffset.y,
-                                                               currFrame.CGRectValue.size.width,
-                                                               currFrame.CGRectValue.size.height)]];
+                                                               currentFrame.size.width,
+                                                               currentFrame.size.height)]];
         }
     }
     
     return out;
 }
 
-- (NSArray<NSValue*>*)referenceFramesInSelectorView:(MZSelectorView *)selectorView {
+- (CGRectArray*)referenceFramesInSelectorView:(MZSelectorView *)selectorView {
     return selectorView.defaultFrames;
 }
 

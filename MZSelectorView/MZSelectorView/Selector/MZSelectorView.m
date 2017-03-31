@@ -24,8 +24,7 @@
     MZScrollInfo *_scrollInfo;
     UITapGestureRecognizer *_tapGestureRecognizer;
     
-    MZSelectorViewHandlerController *_actionHandlerController;
-    
+    MZSelectorViewHandlerController *_actionHandlerController;    
     MZSelectorViewReusableViewItemHandler *_reusableHandler;
 }
 @end
@@ -445,7 +444,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items {
     BOOL out = self.hasViewSize;
     if (out) {
-        NSArray<NSValue*> *frames = self.calculatedFrames;
+        CGRectArray *frames = self.calculatedFrames;
         for (NSUInteger i = 0; i < items.count; ++i) {
             NSUInteger index = [_items indexOfObject:items[i]];
             if (index != NSNotFound && index < frames.count && items[i].hasItem) {
@@ -488,17 +487,17 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - properties
-- (NSArray<NSValue*>*)calculatedFrames {
+- (CGRectArray*)calculatedFrames {
     return [self.activeHandler calculatedFramesInSelectorView:self];
 }
 
-- (NSArray<NSValue*>*)referenceFrames {
+- (CGRectArray*)referenceFrames {
     return [self.activeHandler respondsToSelector:@selector(referenceFramesInSelectorView:)] ?
         [self.activeHandler referenceFramesInSelectorView:self] :
         self.calculatedFrames;
 }
 
-- (NSArray<NSValue*>*)defaultFrames {
+- (CGRectArray*)defaultFrames {
     NSMutableArray<NSValue*> *out = [NSMutableArray array];
     
     NSUInteger numberOfItems = self.numberOfItems;
@@ -534,7 +533,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)updateItemDisplayingStates {
     if (self.hasViewSize) {
-        NSArray<NSValue*> *frames = self.referenceFrames;
+        CGRectArray *frames = self.referenceFrames;
         NSAssert(frames.count == _items.count, @"checkItemDisplayingStates - frames count differs from item count");
         for (NSUInteger i = 0; i < frames.count; ++i) {
             MZSelectorItem *item = _items[i];
