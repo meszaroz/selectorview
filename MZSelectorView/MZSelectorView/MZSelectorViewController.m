@@ -120,7 +120,6 @@
     t.m34 = -1.0 / 700;
     CGFloat rot = MIN(-10,-(10+50*pos));
     t = CATransform3DRotate(t, rot*M_PI/180., 1.0, 0.0, 0);
-    //t = CATransform3DTranslate(t, 0, -0, -200);
     pos = 0.7 + (0.3 * MAX(0.0, pos));
     t = CATransform3DScale(t, pos, pos, 1);
     layer.transform = t;

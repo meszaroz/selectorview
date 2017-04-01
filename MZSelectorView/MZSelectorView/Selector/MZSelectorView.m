@@ -247,7 +247,12 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         [self activateViewItemAtIndex:index];
     }
 }
-
+/*
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self reloadView];
+}
+*/
 @end
 
 @implementation MZSelectorView(Reusable)
