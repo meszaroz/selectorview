@@ -16,4 +16,7 @@
 @property (nonatomic, getter=isActive) BOOL active;
 @property (weak, nonatomic) MZSelectorItem *item;
 
+- (void)setActivePrivate;
+- (void)setSelectedPrivate;
+
 @end

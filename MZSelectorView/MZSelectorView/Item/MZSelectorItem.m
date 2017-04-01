@@ -8,7 +8,7 @@
 
 #import "MZSelectorView.h"
 #import "MZSelectorItem.h"
-#import "MZSelectorViewItem.h"
+#import "MZSelectorViewItem_p.h"
 
 @interface MZSelectorItem() {
     MZSelectorViewItem *_item;
@@ -53,7 +53,14 @@
     if (_selected != selected) {
         [self willChangeValueForKey:@"selected"];
         _selected = selected;
+        [self setSelectedPrivate];
         [self  didChangeValueForKey:@"selected"];
+    }
+}
+
+- (void)setSelectedPrivate {
+    if (_item) {
+        [_item setSelectedPrivate];
     }
 }
 
@@ -61,9 +68,17 @@
     if (_active != active) {
         [self willChangeValueForKey:@"active"];
         _active = active;
+        [self setActivePrivate];
         [self  didChangeValueForKey:@"active"];
     }
 }
+
+- (void)setActivePrivate {
+    if (_item) {
+        [_item setActivePrivate];
+    }
+}
+
 
 @end
 

@@ -45,7 +45,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         }
         
         MZSelectorItem *item = selectorView.items[index];
-        item.item.selected = YES;
+        item.selected = YES;
         
         /* store scroll position of selected item (must be after selected setter) */
         [self storeScrollPositionOfItemAtIndex:index inSelectorView:selectorView];
@@ -57,7 +57,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
                          }
                          completion:^(BOOL finished) {
                              [displayLink invalidate];
-                             item.item.active = YES;
+                             item.active = YES;
                              if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
                                  [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
                              }
@@ -87,8 +87,8 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         /* ToDo: reapply transform for other views */
         
         MZSelectorItem *item = selectorView.items[index];
-        item.item.active   = NO;
-        item.item.selected = NO;
+        item.active   = NO;
+        item.selected = NO;
         
         [UIView animateWithDuration:kDefaultAnimationDuration
                          animations:^{

@@ -80,7 +80,6 @@
 - (void)setActive:(BOOL)active {
     if (_item) {
         _item.active = active;
-        [self setActivePrivate];
     }
 }
 
@@ -112,6 +111,9 @@
             [_contentView setSubviewUserInteractionsEnabled:NO];
         }
     }
+}
+
+- (void)setSelectedPrivate {
 }
 
 - (BOOL)isActive {
