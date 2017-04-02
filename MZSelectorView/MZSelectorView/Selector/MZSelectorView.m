@@ -190,7 +190,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         [self layoutViews   ];
         [self reloadAllItems];
         [self reloadView    ];
-        /* ToDo: try to adjust content offset */
     }
     return out;
 }

@@ -43,7 +43,6 @@
     
     _contentView = [UIView new];
     [self addSubview:_contentView];
-    _activeView = _contentView;
     [_contentView setSubviewUserInteractionsEnabled:NO];
     
     self.item = nil;
@@ -73,6 +72,7 @@
 - (void)setItem:(MZSelectorItem *)item {
     if (_item != item) {
         _item = item;
+        /* ToDo: somehow sync/update active sate of item */
     }
 }
 
