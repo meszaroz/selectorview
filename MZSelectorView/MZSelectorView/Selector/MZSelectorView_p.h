@@ -126,7 +126,7 @@ typedef NSArray<NSValue*> CGRectArray;
 - (BOOL)layoutItems:(NSArray<MZSelectorItem*>*)items;
 - (void)layoutViews;
 
-- (void)adjustContentOffsetForAppliedRotation;
+- (void)adjustScrollForAppliedRotation;
 
 - (void)loadAndDisplayItem:(MZSelectorItem*)item;
 

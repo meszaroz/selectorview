@@ -174,7 +174,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
             }
             [item.item layoutIfNeeded];
         }
-        else if (!item.displaying && !item.active) { /* Hide - don't hide if active */
+        else if (!item.displaying && !item.active) { /* Hide - but don't hide if active */
             if (_delegate && [_delegate respondsToSelector:@selector(selectorView:didEndDisplayingViewItem:atIndex:)]) {
                 [_delegate selectorView:self didEndDisplayingViewItem:item.item atIndex:index];
             }
@@ -219,7 +219,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     /* execute only once */
     if (_scrollInfo.activeInterfaceOrientation != [[UIApplication sharedApplication] statusBarOrientation]) {
-        [self adjustContentOffsetForAppliedRotation];
+        [self adjustScrollForAppliedRotation];
         [self reloadView];
     }
 }
@@ -456,7 +456,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
     return out;
 }
 
-- (void)adjustContentOffsetForAppliedRotation {
+- (void)adjustScrollForAppliedRotation {
     if ([self.activeHandler respondsToSelector:@selector(handleRotationOfSelectorView:)]) {
         [self.activeHandler handleRotationOfSelectorView:self];
     }

@@ -79,7 +79,7 @@
 }
 
 - (CGFloat)minimalItemDistanceInSelectorView:(MZSelectorView * _Nonnull)selectorView {
-    return UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) ? 120. : 100.0;
+    return UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) ? 120.0 : 100.0;
 }
 
 - (CGFloat)topInsetInSelectorView:(MZSelectorView * _Nonnull)selectorView {
