@@ -202,16 +202,18 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 #pragma mark - view item activation/deactivation
-- (BOOL)activateViewItemAtIndex:(NSUInteger)index {
+- (BOOL)activateViewItemAtIndex:(NSUInteger)index animated:(BOOL)animated {
     return [_actionHandlerController activateHandlerWithName:kActivationHandlerName
                                               inSelectorView:self
-                                           withSelectedIndex:index];
+                                           withSelectedIndex:index
+                                                    animated:animated];
 }
 
-- (BOOL)deactivateActiveViewItem {
+- (BOOL)deactivateActiveViewItemAnimated:(BOOL)animated {
     return [_actionHandlerController activateHandlerWithName:kDefaultHandlerName
                                               inSelectorView:self
-                                           withSelectedIndex:NSNotFound];
+                                           withSelectedIndex:NSNotFound
+                                                    animated:animated];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -244,7 +246,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         NSNotFound;
     
     if (index != NSNotFound) {
-        [self activateViewItemAtIndex:index];
+        [self activateViewItemAtIndex:index animated:YES];
     }
 }
 /*

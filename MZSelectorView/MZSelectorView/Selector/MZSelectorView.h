@@ -64,8 +64,8 @@
 @property (nonatomic, readonly) NSUInteger numberOfItems;
 @property (nonatomic, readonly) CGFloat    minimalItemDistance;
 
-- (BOOL)activateViewItemAtIndex:(NSUInteger)index;
-- (BOOL)deactivateActiveViewItem;
+- (BOOL)activateViewItemAtIndex:(NSUInteger)index animated:(BOOL)animated;
+- (BOOL)deactivateActiveViewItemAnimated:(BOOL)animated;
 
 - (nullable __kindof MZSelectorViewItem *)viewItemAtIndex:(NSUInteger)index;
 

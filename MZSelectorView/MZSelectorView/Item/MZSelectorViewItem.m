@@ -44,6 +44,7 @@
     _contentView = [UIView new];
     [self addSubview:_contentView];
     _activeView = _contentView;
+    [_contentView setSubviewUserInteractionsEnabled:NO];
     
     self.item = nil;
 }
@@ -70,7 +71,10 @@
 @implementation MZSelectorViewItem(Private)
 
 - (void)setItem:(MZSelectorItem *)item {
-    _item = item;
+    if (_item != item) {
+        _item = item;
+        [self setActivePrivate];
+    }
 }
 
 - (MZSelectorItem*)item {

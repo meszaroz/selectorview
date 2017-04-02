@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic, readonly) id<MZSelectorViewActionHandler> activeHandler;
 
-- (BOOL)activateHandlerWithName:(NSString*)handlerName inSelectorView:(MZSelectorView*)selectorView withSelectedIndex:(NSUInteger)index;
+- (BOOL)activateHandlerWithName:(NSString*)handlerName inSelectorView:(MZSelectorView*)selectorView withSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end
 

@@ -29,10 +29,11 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 }
 
 #pragma mark - view item activation/deactivation
-- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index {
+- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index animated:(BOOL)animated {
     BOOL out = selectorView && selectorView.superview && ![selectorView.items selectedItem] && index < selectorView.items.count;
     
     if (out) {
+        [self storeScrollPositionOfItemAtIndex:index inSelectorView:selectorView];
         _selectorView = selectorView;
         
         selectorView.scrollView.scrollEnabled = NO;
@@ -47,31 +48,38 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         MZSelectorItem *item = selectorView.items[index];
         item.selected = YES;
         
-        /* store scroll position of selected item (must be after selected setter) */
-        [self storeScrollPositionOfItemAtIndex:index inSelectorView:selectorView];
+        void(^layoutBlock)() = ^{
+            [selectorView resetItemTransform:item];
+            [selectorView updateLayout];
+        };
+
+        void(^finishBlock)(BOOL) = ^(BOOL finished) {
+            [displayLink invalidate];
+            item.active = YES;
+            if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
+                [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
+            }
+        };
         
-        [UIView animateWithDuration:kDefaultAnimationDuration
-                         animations:^{
-                             [selectorView resetItemTransform:item];
-                             [selectorView updateLayout];
-                         }
-                         completion:^(BOOL finished) {
-                             [displayLink invalidate];
-                             item.active = YES;
-                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didActivateViewItemAtIndex:)]) {
-                                 [selectorView.delegate selectorView:selectorView didActivateViewItemAtIndex:index];
-                             }
-                         }];
+        if (animated) {
+            [UIView animateWithDuration:kDefaultAnimationDuration
+                             animations:layoutBlock
+                             completion:finishBlock];
+        }
+        else {
+            layoutBlock();
+            finishBlock(YES);
+        }
     }
     
     return out;
 }
 
-- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView {
-    return [self selectorView:selectorView deactivateItemAtIndex:[selectorView.items indexOfSelectedItem]];
+- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView animated:(BOOL)animated {
+    return [self selectorView:selectorView deactivateItemAtIndex:[selectorView.items indexOfSelectedItem] animated:animated];
 }
 
-- (BOOL)selectorView:(MZSelectorView *)selectorView deactivateItemAtIndex:(NSUInteger)index {
+- (BOOL)selectorView:(MZSelectorView *)selectorView deactivateItemAtIndex:(NSUInteger)index animated:(BOOL)animated {
     BOOL out = selectorView && selectorView.superview && [selectorView selectedViewItem];
     
     if (out) {
@@ -90,19 +98,29 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
         item.active   = NO;
         item.selected = NO;
         
-        [UIView animateWithDuration:kDefaultAnimationDuration
-                         animations:^{
-                             [selectorView updateLayout            ];
-                             [selectorView transformDisplayingItems];
-                         }
-                         completion:^(BOOL finished) {
-                             [displayLink invalidate];
-                             _selectorView = nil;
-                             selectorView.scrollView.scrollEnabled = YES;
-                             if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didDeactivateViewItemAtIndex:)]) {
-                                 [selectorView.delegate selectorView:selectorView didDeactivateViewItemAtIndex:index];
-                             }
-                         }];
+        void(^layoutBlock)() = ^{
+            [selectorView updateLayout            ];
+            [selectorView transformDisplayingItems];
+        };
+        
+        void(^finishBlock)(BOOL) = ^(BOOL finished) {
+            [displayLink invalidate];
+            _selectorView = nil;
+            selectorView.scrollView.scrollEnabled = YES;
+            if (selectorView.delegate && [selectorView.delegate respondsToSelector:@selector(selectorView:didDeactivateViewItemAtIndex:)]) {
+                [selectorView.delegate selectorView:selectorView didDeactivateViewItemAtIndex:index];
+            }
+        };
+        
+        if (animated) {
+            [UIView animateWithDuration:kDefaultAnimationDuration
+                             animations:layoutBlock
+                             completion:finishBlock];
+        }
+        else {
+            layoutBlock();
+            finishBlock(YES);
+        }
     }
     
     return out;

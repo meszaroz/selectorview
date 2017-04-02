@@ -30,8 +30,8 @@ typedef NSArray<NSValue*> CGRectArray;
 
 - (BOOL)shouldTransformItem:(MZSelectorItem*)item inSelectorView:(MZSelectorView *)selectorView;
 
-- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index;
-- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView;
+- (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index animated:(BOOL)animated;
+- (BOOL)deactivateSelectedItemInSelectorView:(MZSelectorView *)selectorView animated:(BOOL)animated;
 
 @end
 

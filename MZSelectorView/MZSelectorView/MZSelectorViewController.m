@@ -50,7 +50,7 @@
 }
 
 - (void)action {
-    [_selectorView deactivateActiveViewItem];
+    [_selectorView deactivateActiveViewItemAnimated:YES];
 }
 
 - (void)viewDidLoad {
@@ -60,6 +60,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [_selectorView reloadData];
+    [_selectorView activateViewItemAtIndex:0 animated:NO];
     [super viewWillAppear:animated];
 }
 

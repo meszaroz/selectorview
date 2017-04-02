@@ -11,8 +11,9 @@
 #import "MZSelectorItem.h"
 #import "MZScrollInfo.h"
 
-static NSString *kTransitionSelectionView = @"TransitionSelectionView";
-static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
+static NSString *kTransitionSelectionView  = @"TransitionSelectionView";
+static NSString *kTransitionSelectedIndex  = @"TransitionSelectedIndex";
+static NSString *kTransitionSelectAnimated = @"TransitionSelectAnimated";
 
 @interface MZSelectorViewHandlerController() {
     id<MZSelectorViewActionHandler> _idleHandler;
@@ -44,22 +45,23 @@ static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
             TKState *state = [TKState stateWithName:[handler.class name]];
             
             [state setDidEnterStateBlock:^(TKState *state, TKTransition *transition) {
-                if ([handler respondsToSelector:@selector(selectorView:activateItemAtIndex:)]) {
-                    [handler selectorView: (MZSelectorView*)transition.userInfo[kTransitionSelectionView]
-                      activateItemAtIndex:((NSNumber      *)transition.userInfo[kTransitionSelectedIndex]).integerValue];
+                if ([handler respondsToSelector:@selector(selectorView:activateItemAtIndex:animated:)]) {
+                    [handler selectorView: (MZSelectorView*)transition.userInfo[kTransitionSelectionView ]
+                      activateItemAtIndex:((NSNumber      *)transition.userInfo[kTransitionSelectedIndex ]).integerValue
+                                 animated:((NSNumber      *)transition.userInfo[kTransitionSelectAnimated]).boolValue];
                 }
             }];
             
             [state setDidExitStateBlock:^(TKState *state, TKTransition *transition) {
-                if ([handler respondsToSelector:@selector(deactivateSelectedItemInSelectorView:)]) {
-                    [handler deactivateSelectedItemInSelectorView:(MZSelectorView*)transition.userInfo[kTransitionSelectionView]];
+                if ([handler respondsToSelector:@selector(deactivateSelectedItemInSelectorView:animated:)]) {
+                    [handler deactivateSelectedItemInSelectorView:(MZSelectorView*)transition.userInfo[kTransitionSelectionView]
+                                                         animated:((NSNumber*)transition.userInfo[kTransitionSelectAnimated]).boolValue];
                 }
             }];
             
             [states addObject:state];
             [_handlers setValue:handler forKey:state.name];
         }
-                     
                 TKState   *idleState       =  states.firstObject;
         NSArray<TKState*> *selectionStates = [states subarrayWithRange:NSMakeRange(1, states.count-1)];
         
@@ -81,10 +83,11 @@ static NSString *kTransitionSelectedIndex = @"TransitionSelectedIndex";
     return self;
 }
 
-- (BOOL)activateHandlerWithName:(NSString*)handlerName inSelectorView:(MZSelectorView*)selectorView withSelectedIndex:(NSUInteger)index {
+- (BOOL)activateHandlerWithName:(NSString*)handlerName inSelectorView:(MZSelectorView*)selectorView withSelectedIndex:(NSUInteger)index animated:(BOOL)animated {
     return [_stateMachine fireEvent:handlerName
-                           userInfo:@{ kTransitionSelectionView : selectorView,
-                                       kTransitionSelectedIndex : @(index) }
+                           userInfo:@{ kTransitionSelectionView  : selectorView,
+                                       kTransitionSelectedIndex  : @(index),
+                                       kTransitionSelectAnimated : @(animated)}
                               error:nil];
 }
 
