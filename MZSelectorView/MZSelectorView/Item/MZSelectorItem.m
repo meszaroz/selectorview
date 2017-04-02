@@ -74,11 +74,16 @@
 }
 
 - (void)setActivePrivate {
+    /* load if active */
+    if (_active && [self loadItemIfNeeded]) {
+        [self toggleDisplaying];
+    }
+    
+    /* configure item */
     if (_item) {
         [_item setActivePrivate];
     }
 }
-
 
 @end
 

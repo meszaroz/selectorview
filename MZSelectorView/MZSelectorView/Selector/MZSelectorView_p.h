@@ -49,6 +49,7 @@ typedef NSArray<NSValue*> CGRectArray;
 @property (strong, nonatomic, readonly) MZScrollInfo *scrollInfo;
 
 - (void)handleScrollChange;
+- (void)reloadView;
 
 @end
 

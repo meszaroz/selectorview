@@ -73,7 +73,6 @@
 - (void)setItem:(MZSelectorItem *)item {
     if (_item != item) {
         _item = item;
-        [self setActivePrivate];
     }
 }
 

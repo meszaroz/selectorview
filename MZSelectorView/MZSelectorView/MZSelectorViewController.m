@@ -60,7 +60,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [_selectorView reloadData];
-    [_selectorView activateViewItemAtIndex:0 animated:NO];
+    [_selectorView activateViewItemAtIndex:99 animated:NO];
     [super viewWillAppear:animated];
 }
 

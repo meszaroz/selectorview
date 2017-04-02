@@ -33,6 +33,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
     BOOL out = selectorView && selectorView.superview && ![selectorView.items selectedItem] && index < selectorView.items.count;
     
     if (out) {
+        [self adjustContentOffsetOfItemAtIndex:index inSelectorView:selectorView];
         [self storeScrollPositionOfItemAtIndex:index inSelectorView:selectorView];
         _selectorView = selectorView;
         
@@ -131,6 +132,14 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 }
 
 - (void)updateFrame:(CADisplayLink*)displayLink {
+}
+
+- (void)adjustContentOffsetOfItemAtIndex:(NSUInteger)index inSelectorView:(MZSelectorView*)selectorView {
+    MZSelectorItem *item = selectorView.items[index];
+    if (![selectorView.displayingViewItems containsObject:item.item]) {
+        selectorView.scrollView.contentOffset = CGPointMake(selectorView.scrollView.contentOffset.x,
+                                                            selectorView.defaultFrames[index].CGRectValue.origin.y - selectorView.itemInsets.top);
+    }
 }
 
 /* calculate relative scroll positions for restoring after ex. rotation

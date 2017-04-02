@@ -28,6 +28,7 @@
 - (CGPoint)relativePositionInScrollContentOfAbsolutePositionInScrollContent:(CGPoint)position;
 - (CGPoint)relativePositionInScrollViewOfAbsolutePositionInScrollContent:(CGPoint)position;
 - (CGPoint)contentOffsetOfRelativeScrollViewPosition:(CGPoint)relViewPosition inRelationToAbsolutePositionInScrollContent:(CGPoint)absContentPosition;
+- (CGPoint)limitedContentOffset:(CGPoint)contentOffset;
 
 @end
 

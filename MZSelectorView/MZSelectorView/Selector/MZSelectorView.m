@@ -174,7 +174,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
             }
             [item.item layoutIfNeeded];
         }
-        else if (!item.displaying) { /* Hide */
+        else if (!item.displaying && !item.active) { /* Hide - don't hide if active */
             if (_delegate && [_delegate respondsToSelector:@selector(selectorView:didEndDisplayingViewItem:atIndex:)]) {
                 [_delegate selectorView:self didEndDisplayingViewItem:item.item atIndex:index];
             }
@@ -193,12 +193,6 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
         /* ToDo: try to adjust content offset */
     }
     return out;
-}
-
-- (void)reloadView {
-    [self resetAllItemTransforms];
-    [self updateLayout          ];
-    [self handleScrollChange    ];
 }
 
 #pragma mark - view item activation/deactivation
@@ -488,8 +482,11 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)loadAndDisplayItem:(MZSelectorItem*)item {
-    if (item && [item loadItemIfNeeded]) {
-        [self layoutItems:@[item]];
+    if (item) {
+        [item loadItemIfNeeded];
+        if (item.hasItem) {
+            [self layoutItems:@[item]];
+        }
     }
 }
 
@@ -657,6 +654,12 @@ static const CGFloat kItemHideDistanceOffset = 40.0;
 - (void)handleScrollChange {
     [self updateItemDisplayingStates];
     [self transformDisplayingItems  ];
+}
+
+- (void)reloadView {
+    [self resetAllItemTransforms];
+    [self updateLayout          ];
+    [self handleScrollChange    ];
 }
 
 @end
