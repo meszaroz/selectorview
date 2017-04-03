@@ -44,8 +44,6 @@
     _contentView = [UIView new];
     [self addSubview:_contentView];
     [_contentView setSubviewUserInteractionsEnabled:NO];
-    
-    self.item = nil;
 }
 
 - (void)setFrame:(CGRect)frame {
@@ -72,7 +70,7 @@
 - (void)setItem:(MZSelectorItem *)item {
     if (_item != item) {
         _item = item;
-        /* ToDo: somehow sync/update active sate of item */
+        [self setActivePrivate];
     }
 }
 
@@ -90,37 +88,40 @@
     if (_item) {
         static CGPoint lastAnchorPoint = { 0.5, 0.5 };
         /**/ if ( _item.active && _item.view.superview) {
-            [_contentView removeFromSuperview];
-            
-            _activeView = _contentView;
-            _contentView = nil;
-            
-            lastAnchorPoint = _activeView.layer.anchorPoint;
-            [_activeView.layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.5)];
-            [_item.view addSubview:_activeView];
-            [_activeView autoPinEdgesToSuperviewEdges];
-            
+            if (_contentView) {
+                [_contentView removeFromSuperview];
+                _activeView = _contentView;
+                _contentView = nil;
+            }
+            if (![_item.view.subviews containsObject:_activeView]) {
+                lastAnchorPoint = _activeView.layer.anchorPoint;
+                [_activeView.layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.5)];
+                [_item.view addSubview:_activeView];
+                [_activeView autoPinEdgesToSuperviewEdges];
+            }
             [_activeView setSubviewUserInteractionsEnabled:YES];
         }
         else if (!_item.active) {
-            [_activeView removeFromSuperview];
-            
-            _contentView = _activeView;
-            _activeView = nil;
-            [self addSubview:_contentView];
-            _contentView.translatesAutoresizingMaskIntoConstraints = YES;
-            [_contentView.layer setCorrectedAnchorPoint:lastAnchorPoint];
-            
+            if (_activeView) {
+                [_activeView removeFromSuperview];
+                _contentView = _activeView;
+                _activeView = nil;
+            }
+            if (![self.subviews containsObject:_contentView]) {
+                [self addSubview:_contentView];
+                _contentView.translatesAutoresizingMaskIntoConstraints = YES;
+                [_contentView.layer setCorrectedAnchorPoint:lastAnchorPoint];
+            }
             [_contentView setSubviewUserInteractionsEnabled:NO];
         }
     }
 }
 
-- (void)setSelectedPrivate {
-}
-
 - (BOOL)isActive {
     return _item && _item.active;
+}
+
+- (void)setSelectedPrivate {
 }
 
 @end
