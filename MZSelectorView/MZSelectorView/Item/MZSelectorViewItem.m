@@ -87,7 +87,7 @@
 - (void)setActivePrivate {
     if (_item) {
         static CGPoint lastAnchorPoint = { 0.5, 0.5 };
-        /**/ if ( _item.active && _item.view.superview) {
+        /**/ if ( _item.active && _item.view) {
             if (_contentView) {
                 [_contentView removeFromSuperview];
                 _activeView = _contentView;
