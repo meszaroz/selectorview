@@ -1,5 +1,5 @@
 //
-//  MZSelectorViewController.m
+//  MZSelectorViewControllerExample.m
 //  MZSelectorView
 //
 //  Created by Mészáros Zoltán on 2017. 03. 11..
@@ -7,7 +7,7 @@
 //
 
 #import "PureLayout.h"
-#import "MZSelectorViewController.h"
+#import "MZSelectorViewControllerExample.h"
 #import "MZSelectorViewItem.h"
 #import "CALayer+Anchor.h"
 
@@ -34,23 +34,17 @@
 
 @end
 
-@interface MZSelectorViewController () <MZSelectorViewDelegate, MZSelectorViewDataSource, MZSelectorViewDelegateLayout>
+@interface MZSelectorViewControllerExample ()
 @end
 
-@implementation MZSelectorViewController
+@implementation MZSelectorViewControllerExample
 
 - (void)initialize {
-    _selectorView = [MZSelectorView new];
-    _selectorView.delegate   = self;
-    _selectorView.dataSource = self;
-    _selectorView.layout     = self;
-    [_selectorView registerClass:MZCustomSelectorViewItem.class forViewItemReuseIdentifier:@"ViewItem"];
-    [self.view addSubview:_selectorView];
-    [_selectorView autoPinEdgesToSuperviewEdges];
+    [self.selectorView registerClass:MZCustomSelectorViewItem.class forViewItemReuseIdentifier:@"ViewItem"];
 }
 
 - (void)action {
-    [_selectorView deactivateActiveViewItemAnimated:YES];
+    [self.selectorView deactivateActiveViewItemAnimated:YES];
 }
 
 - (void)viewDidLoad {
@@ -59,8 +53,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [_selectorView reloadData];
-    [_selectorView activateViewItemAtIndex:99 animated:NO];
+    [self.selectorView reloadData];
+    [self.selectorView activateViewItemAtIndex:99 animated:NO];
     [super viewWillAppear:animated];
 }
 

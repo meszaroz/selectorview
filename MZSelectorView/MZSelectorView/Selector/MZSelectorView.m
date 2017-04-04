@@ -211,15 +211,8 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self handleScrollChange];
-}
-
-#pragma mark - orientation change
-- (void)deviceOrientationDidChange:(NSNotification *)notification {
-    /* execute only once */
-    if (_scrollInfo.activeInterfaceOrientation != [[UIApplication sharedApplication] statusBarOrientation]) {
-        [self adjustScrollForAppliedRotation];
-        [self reloadView];
+    if (scrollView.scrollEnabled) {
+        [self handleScrollChange];
     }
 }
 
@@ -281,7 +274,7 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)setupOrientationChange {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChange:)
+                                             selector:@selector(deviceOrientationDidChange)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
 }
@@ -328,6 +321,23 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 
 - (void)setupItemList {
     _items = [NSMutableArray array];
+}
+
+@end
+
+@implementation MZSelectorView(Rotation)
+
+- (void)deviceOrientationWillChange {
+    _scrollView.scrollEnabled = NO;
+}
+
+- (void)deviceOrientationDidChange {
+    /* use the info solution, because SelectorView could be used individually also -> it uses than the notification */
+    if (_scrollInfo.activeInterfaceOrientation != [[UIApplication sharedApplication] statusBarOrientation]) {
+        _scrollView.scrollEnabled = YES;
+        [self adjustScrollForAppliedRotation];
+        [self reloadView];
+    }
 }
 
 @end
@@ -463,13 +473,13 @@ static const UIEdgeInsets kDefaultItemInsets = { 40.0, 0.0, 80.0, 0.0 };
 }
 
 - (void)updateLayout {
-    _scrollView.delegate = nil;
+    _scrollView.scrollEnabled = NO;
     [self updateContentSize    ];
     [self updateContentOffset  ];
     [self updateItemDisplayingStates];
     [self layoutDisplayingItems];
     [self layoutViews          ];
-    _scrollView.delegate = self;
+    _scrollView.scrollEnabled = YES;
 }
 
 - (void)layoutViews {

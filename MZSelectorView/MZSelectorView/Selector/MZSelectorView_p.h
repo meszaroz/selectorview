@@ -78,6 +78,13 @@ typedef NSArray<NSValue*> CGRectArray;
 
 @end
 
+@interface MZSelectorView(Rotation)
+
+- (void)deviceOrientationWillChange;
+- (void)deviceOrientationDidChange;
+
+@end
+
 @interface MZSelectorView(Setup)
 
 - (void)setupComponents;

@@ -30,7 +30,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 
 #pragma mark - view item activation/deactivation
 - (BOOL)selectorView:(MZSelectorView *)selectorView activateItemAtIndex:(NSUInteger)index animated:(BOOL)animated {
-    BOOL out = selectorView && selectorView.superview && ![selectorView.items selectedItem] && index < selectorView.items.count;
+    BOOL out = selectorView && ![selectorView.items selectedItem] && index < selectorView.items.count;
     
     if (out) {
         [self adjustContentOffsetOfItemAtIndex:index inSelectorView:selectorView];
@@ -81,7 +81,7 @@ static const CGFloat kDefaultAnimationDuration = 0.5;
 }
 
 - (BOOL)selectorView:(MZSelectorView *)selectorView deactivateItemAtIndex:(NSUInteger)index animated:(BOOL)animated {
-    BOOL out = selectorView && selectorView.superview && [selectorView selectedViewItem];
+    BOOL out = selectorView && [selectorView selectedViewItem];
     
     if (out) {
         [self clearScrollPosition];
