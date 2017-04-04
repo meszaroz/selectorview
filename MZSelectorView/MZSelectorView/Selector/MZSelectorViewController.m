@@ -42,18 +42,11 @@
 }
 
 #pragma mark - orientation change
-/* - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator 
-   -> not usable, because UIScrollView update is executed before it is called */
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [_selectorView deviceOrientationWillChange];
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) { }
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context) { [_selectorView deviceOrientationDidChange ]; }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [_selectorView deviceOrientationDidChange];
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-}
-
 
 @end

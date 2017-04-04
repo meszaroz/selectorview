@@ -40,6 +40,7 @@
 @implementation MZSelectorViewControllerExample
 
 - (void)initialize {
+    self.view.backgroundColor = [UIColor whiteColor];
     [self.selectorView registerClass:MZCustomSelectorViewItem.class forViewItemReuseIdentifier:@"ViewItem"];
 }
 
