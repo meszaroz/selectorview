@@ -96,16 +96,18 @@
                         [UIColor orangeColor],
                         [UIColor purpleColor],];
     
+    item.clipsToBounds = NO;
     
     item.contentView.backgroundColor = colors[index%colors.count];
     item.contentView.layer.borderColor = [UIColor whiteColor].CGColor;
     item.contentView.layer.borderWidth = 2;
-
+    
     [((MZCustomSelectorViewItem*)item).button addTarget:self action:@selector(action) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)selectorView:(MZSelectorView * _Nonnull)selectorView transformContentLayer:(CALayer* _Nonnull)layer inViewItem:(MZSelectorViewItem * _Nonnull)item atIndex:(NSUInteger)index {
     
+    /* TRANSFORM */
     CGPoint point = [selectorView.scrollView convertPoint:item.frame.origin toView:self.view];
     
     [layer setCorrectedAnchorPoint:CGPointMake(0.5, 0.0)];
@@ -119,6 +121,15 @@
     pos = 0.7 + (0.3 * MAX(0.0, pos));
     t = CATransform3DScale(t, pos, pos, 1);
     layer.transform = t;
+    
+    /* SHADOW */
+    layer.shadowColor = [UIColor blackColor].CGColor;
+    layer.shadowOffset = CGSizeMake(0.0, -20.0);
+    layer.shadowOpacity = 0.6;
+    layer.shadowRadius = 20.0;
+    layer.shadowPath = [UIBezierPath bezierPathWithRect:layer.bounds].CGPath;
+    layer.shouldRasterize = YES;
+
 }
 
 @end
