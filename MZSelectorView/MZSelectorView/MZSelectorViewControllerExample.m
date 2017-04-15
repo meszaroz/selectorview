@@ -96,8 +96,6 @@
                         [UIColor orangeColor],
                         [UIColor purpleColor],];
     
-    item.clipsToBounds = NO;
-    
     item.contentView.backgroundColor = colors[index%colors.count];
     item.contentView.layer.borderColor = [UIColor whiteColor].CGColor;
     item.contentView.layer.borderWidth = 2;

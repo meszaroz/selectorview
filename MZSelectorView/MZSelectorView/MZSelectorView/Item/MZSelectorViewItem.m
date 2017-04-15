@@ -39,8 +39,6 @@
 }
 
 - (void)initialize {
-    self.clipsToBounds = YES;    
-    
     _contentView = [UIView new];
     [self addSubview:_contentView];
     [_contentView setSubviewUserInteractionsEnabled:NO];
