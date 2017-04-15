@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0ADAAA86393B3DEF9FF4679F /* libPods-MZSelectorView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4070D57412E3024C622CBD2 /* libPods-MZSelectorView.a */; };
-		21075F441E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */; };
-		21107FCC1E942B420075FF65 /* MZSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21107FCB1E942B420075FF65 /* MZSelectorViewController.m */; };
 		21111FFD1E81C96900E7DC29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 21111FFC1E81C96900E7DC29 /* main.m */; };
 		211120001E81C96900E7DC29 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 21111FFF1E81C96900E7DC29 /* AppDelegate.m */; };
 		211120061E81C96900E7DC29 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 211120041E81C96900E7DC29 /* Main.storyboard */; };
@@ -18,15 +16,17 @@
 		211120161E81C96900E7DC29 /* MZSelectorViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120151E81C96900E7DC29 /* MZSelectorViewTests.m */; };
 		211120211E81C96900E7DC29 /* MZSelectorViewUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120201E81C96900E7DC29 /* MZSelectorViewUITests.m */; };
 		211120301E81CA8800E7DC29 /* MZSelectorViewControllerExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111202F1E81CA8800E7DC29 /* MZSelectorViewControllerExample.m */; };
-		211120361E81CACD00E7DC29 /* CALayer+Anchor.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120331E81CACD00E7DC29 /* CALayer+Anchor.m */; };
-		211120371E81CACD00E7DC29 /* UIView+UserInteraction.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120351E81CACD00E7DC29 /* UIView+UserInteraction.m */; };
-		2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */; };
-		2111203F1E81CADC00E7DC29 /* MZSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2111203D1E81CADC00E7DC29 /* MZSelectorView.m */; };
-		211120441E81CAE900E7DC29 /* MZSelectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */; };
-		211120531E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */; };
-		211120541E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */; };
-		211120581E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 211120561E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m */; };
-		213C17A71E8EE7AF00C92275 /* MZSelectorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 213C17A61E8EE7AF00C92275 /* MZSelectorItem.m */; };
+		214525361EA25C2E00FEDACD /* UIView+UserInteraction.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525321EA25C2E00FEDACD /* UIView+UserInteraction.m */; };
+		214525371EA25C2E00FEDACD /* CALayer+Anchor.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525351EA25C2E00FEDACD /* CALayer+Anchor.m */; };
+		2145253F1EA25C3D00FEDACD /* MZScrollInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525391EA25C3D00FEDACD /* MZScrollInfo.m */; };
+		214525401EA25C3D00FEDACD /* MZSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2145253C1EA25C3D00FEDACD /* MZSelectorView.m */; };
+		214525411EA25C3D00FEDACD /* MZSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2145253E1EA25C3D00FEDACD /* MZSelectorViewController.m */; };
+		214525441EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525431EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.m */; };
+		2145254C1EA25C5D00FEDACD /* MZSelectorViewActivationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525461EA25C5D00FEDACD /* MZSelectorViewActivationHandler.m */; };
+		2145254D1EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525481EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.m */; };
+		2145254E1EA25C5D00FEDACD /* MZSelectorViewHandlerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2145254A1EA25C5D00FEDACD /* MZSelectorViewHandlerController.m */; };
+		214525541EA25C7300FEDACD /* MZSelectorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525501EA25C7300FEDACD /* MZSelectorItem.m */; };
+		214525551EA25C7300FEDACD /* MZSelectorViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 214525531EA25C7300FEDACD /* MZSelectorViewItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,10 +47,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		21075F421E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewReusableViewItemHandler.h; path = Selector/Support/MZSelectorViewReusableViewItemHandler.h; sourceTree = "<group>"; };
-		21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewReusableViewItemHandler.m; path = Selector/Support/MZSelectorViewReusableViewItemHandler.m; sourceTree = "<group>"; };
-		21107FCA1E942B420075FF65 /* MZSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewController.h; path = Selector/MZSelectorViewController.h; sourceTree = "<group>"; };
-		21107FCB1E942B420075FF65 /* MZSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewController.m; path = Selector/MZSelectorViewController.m; sourceTree = "<group>"; };
 		21111FF81E81C96900E7DC29 /* MZSelectorView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MZSelectorView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21111FFC1E81C96900E7DC29 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		21111FFE1E81C96900E7DC29 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -67,27 +63,31 @@
 		211120221E81C96900E7DC29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2111202E1E81CA8800E7DC29 /* MZSelectorViewControllerExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZSelectorViewControllerExample.h; sourceTree = "<group>"; };
 		2111202F1E81CA8800E7DC29 /* MZSelectorViewControllerExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZSelectorViewControllerExample.m; sourceTree = "<group>"; };
-		211120321E81CACD00E7DC29 /* CALayer+Anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CALayer+Anchor.h"; path = "Support/CALayer+Anchor.h"; sourceTree = "<group>"; };
-		211120331E81CACD00E7DC29 /* CALayer+Anchor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CALayer+Anchor.m"; path = "Support/CALayer+Anchor.m"; sourceTree = "<group>"; };
-		211120341E81CACD00E7DC29 /* UIView+UserInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+UserInteraction.h"; path = "Support/UIView+UserInteraction.h"; sourceTree = "<group>"; };
-		211120351E81CACD00E7DC29 /* UIView+UserInteraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+UserInteraction.m"; path = "Support/UIView+UserInteraction.m"; sourceTree = "<group>"; };
-		211120391E81CADC00E7DC29 /* MZScrollInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZScrollInfo.h; path = Selector/MZScrollInfo.h; sourceTree = "<group>"; };
-		2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZScrollInfo.m; path = Selector/MZScrollInfo.m; sourceTree = "<group>"; };
-		2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorView_p.h; path = Selector/MZSelectorView_p.h; sourceTree = "<group>"; };
-		2111203C1E81CADC00E7DC29 /* MZSelectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorView.h; path = Selector/MZSelectorView.h; sourceTree = "<group>"; };
-		2111203D1E81CADC00E7DC29 /* MZSelectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorView.m; path = Selector/MZSelectorView.m; sourceTree = "<group>"; };
-		211120411E81CAE900E7DC29 /* MZSelectorViewItem_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem_p.h; path = Item/MZSelectorViewItem_p.h; sourceTree = "<group>"; };
-		211120421E81CAE900E7DC29 /* MZSelectorViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem.h; path = Item/MZSelectorViewItem.h; sourceTree = "<group>"; };
-		211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewItem.m; path = Item/MZSelectorViewItem.m; sourceTree = "<group>"; };
-		2111204F1E85DE7000E7DC29 /* MZSelectorViewActivationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewActivationHandler.h; path = Selector/Handlers/MZSelectorViewActivationHandler.h; sourceTree = "<group>"; };
-		211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewActivationHandler.m; path = Selector/Handlers/MZSelectorViewActivationHandler.m; sourceTree = "<group>"; };
-		211120511E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewDefaultHandler.h; path = Selector/Handlers/MZSelectorViewDefaultHandler.h; sourceTree = "<group>"; };
-		211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewDefaultHandler.m; path = Selector/Handlers/MZSelectorViewDefaultHandler.m; sourceTree = "<group>"; };
-		211120551E85E82100E7DC29 /* MZSelectorViewHandlers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewHandlers.h; path = Selector/Handlers/MZSelectorViewHandlers.h; sourceTree = "<group>"; };
-		211120561E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewHandlerController.m; path = Selector/Handlers/MZSelectorViewHandlerController.m; sourceTree = "<group>"; };
-		211120571E87BA3F00E7DC29 /* MZSelectorViewHandlerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewHandlerController.h; path = Selector/Handlers/MZSelectorViewHandlerController.h; sourceTree = "<group>"; };
-		213C17A51E8EE7AF00C92275 /* MZSelectorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorItem.h; path = Item/MZSelectorItem.h; sourceTree = "<group>"; };
-		213C17A61E8EE7AF00C92275 /* MZSelectorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorItem.m; path = Item/MZSelectorItem.m; sourceTree = "<group>"; };
+		214525321EA25C2E00FEDACD /* UIView+UserInteraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+UserInteraction.m"; path = "MZSelectorView/Support/UIView+UserInteraction.m"; sourceTree = "<group>"; };
+		214525331EA25C2E00FEDACD /* UIView+UserInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+UserInteraction.h"; path = "MZSelectorView/Support/UIView+UserInteraction.h"; sourceTree = "<group>"; };
+		214525341EA25C2E00FEDACD /* CALayer+Anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CALayer+Anchor.h"; path = "MZSelectorView/Support/CALayer+Anchor.h"; sourceTree = "<group>"; };
+		214525351EA25C2E00FEDACD /* CALayer+Anchor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CALayer+Anchor.m"; path = "MZSelectorView/Support/CALayer+Anchor.m"; sourceTree = "<group>"; };
+		214525381EA25C3D00FEDACD /* MZScrollInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZScrollInfo.h; path = MZSelectorView/Selector/MZScrollInfo.h; sourceTree = "<group>"; };
+		214525391EA25C3D00FEDACD /* MZScrollInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZScrollInfo.m; path = MZSelectorView/Selector/MZScrollInfo.m; sourceTree = "<group>"; };
+		2145253A1EA25C3D00FEDACD /* MZSelectorView_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorView_p.h; path = MZSelectorView/Selector/MZSelectorView_p.h; sourceTree = "<group>"; };
+		2145253B1EA25C3D00FEDACD /* MZSelectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorView.h; path = MZSelectorView/Selector/MZSelectorView.h; sourceTree = "<group>"; };
+		2145253C1EA25C3D00FEDACD /* MZSelectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorView.m; path = MZSelectorView/Selector/MZSelectorView.m; sourceTree = "<group>"; };
+		2145253D1EA25C3D00FEDACD /* MZSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewController.h; path = MZSelectorView/Selector/MZSelectorViewController.h; sourceTree = "<group>"; };
+		2145253E1EA25C3D00FEDACD /* MZSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewController.m; path = MZSelectorView/Selector/MZSelectorViewController.m; sourceTree = "<group>"; };
+		214525421EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewReusableViewItemHandler.h; path = MZSelectorView/Selector/Support/MZSelectorViewReusableViewItemHandler.h; sourceTree = "<group>"; };
+		214525431EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewReusableViewItemHandler.m; path = MZSelectorView/Selector/Support/MZSelectorViewReusableViewItemHandler.m; sourceTree = "<group>"; };
+		214525451EA25C5D00FEDACD /* MZSelectorViewActivationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewActivationHandler.h; path = MZSelectorView/Selector/Handlers/MZSelectorViewActivationHandler.h; sourceTree = "<group>"; };
+		214525461EA25C5D00FEDACD /* MZSelectorViewActivationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewActivationHandler.m; path = MZSelectorView/Selector/Handlers/MZSelectorViewActivationHandler.m; sourceTree = "<group>"; };
+		214525471EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewDefaultHandler.h; path = MZSelectorView/Selector/Handlers/MZSelectorViewDefaultHandler.h; sourceTree = "<group>"; };
+		214525481EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewDefaultHandler.m; path = MZSelectorView/Selector/Handlers/MZSelectorViewDefaultHandler.m; sourceTree = "<group>"; };
+		214525491EA25C5D00FEDACD /* MZSelectorViewHandlerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewHandlerController.h; path = MZSelectorView/Selector/Handlers/MZSelectorViewHandlerController.h; sourceTree = "<group>"; };
+		2145254A1EA25C5D00FEDACD /* MZSelectorViewHandlerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewHandlerController.m; path = MZSelectorView/Selector/Handlers/MZSelectorViewHandlerController.m; sourceTree = "<group>"; };
+		2145254B1EA25C5D00FEDACD /* MZSelectorViewHandlers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewHandlers.h; path = MZSelectorView/Selector/Handlers/MZSelectorViewHandlers.h; sourceTree = "<group>"; };
+		2145254F1EA25C7300FEDACD /* MZSelectorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorItem.h; path = MZSelectorView/Item/MZSelectorItem.h; sourceTree = "<group>"; };
+		214525501EA25C7300FEDACD /* MZSelectorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorItem.m; path = MZSelectorView/Item/MZSelectorItem.m; sourceTree = "<group>"; };
+		214525511EA25C7300FEDACD /* MZSelectorViewItem_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem_p.h; path = MZSelectorView/Item/MZSelectorViewItem_p.h; sourceTree = "<group>"; };
+		214525521EA25C7300FEDACD /* MZSelectorViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MZSelectorViewItem.h; path = MZSelectorView/Item/MZSelectorViewItem.h; sourceTree = "<group>"; };
+		214525531EA25C7300FEDACD /* MZSelectorViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MZSelectorViewItem.m; path = MZSelectorView/Item/MZSelectorViewItem.m; sourceTree = "<group>"; };
 		3E3A25A0D859CDF0BE669028 /* Pods-MZSelectorView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.debug.xcconfig"; sourceTree = "<group>"; };
 		B4070D57412E3024C622CBD2 /* libPods-MZSelectorView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MZSelectorView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBE24617E00AA956B8E88BD9 /* Pods-MZSelectorView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MZSelectorView.release.xcconfig"; path = "Pods/Target Support Files/Pods-MZSelectorView/Pods-MZSelectorView.release.xcconfig"; sourceTree = "<group>"; };
@@ -122,8 +122,8 @@
 		21075F411E8996F200ECA251 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				21075F421E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.h */,
-				21075F431E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m */,
+				214525421EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.h */,
+				214525431EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.m */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -153,9 +153,7 @@
 		21111FFA1E81C96900E7DC29 /* MZSelectorView */ = {
 			isa = PBXGroup;
 			children = (
-				211120311E81CAC100E7DC29 /* Support */,
-				211120381E81CAD200E7DC29 /* Selector */,
-				211120401E81CADF00E7DC29 /* Item */,
+				214525311EA25C0E00FEDACD /* SelectorView */,
 				21111FFE1E81C96900E7DC29 /* AppDelegate.h */,
 				21111FFF1E81C96900E7DC29 /* AppDelegate.m */,
 				2111202E1E81CA8800E7DC29 /* MZSelectorViewControllerExample.h */,
@@ -198,10 +196,10 @@
 		211120311E81CAC100E7DC29 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				211120321E81CACD00E7DC29 /* CALayer+Anchor.h */,
-				211120331E81CACD00E7DC29 /* CALayer+Anchor.m */,
-				211120341E81CACD00E7DC29 /* UIView+UserInteraction.h */,
-				211120351E81CACD00E7DC29 /* UIView+UserInteraction.m */,
+				214525321EA25C2E00FEDACD /* UIView+UserInteraction.m */,
+				214525331EA25C2E00FEDACD /* UIView+UserInteraction.h */,
+				214525341EA25C2E00FEDACD /* CALayer+Anchor.h */,
+				214525351EA25C2E00FEDACD /* CALayer+Anchor.m */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -211,13 +209,13 @@
 			children = (
 				21075F411E8996F200ECA251 /* Support */,
 				2111204E1E85DB0300E7DC29 /* Handlers */,
-				211120391E81CADC00E7DC29 /* MZScrollInfo.h */,
-				2111203A1E81CADC00E7DC29 /* MZScrollInfo.m */,
-				2111203B1E81CADC00E7DC29 /* MZSelectorView_p.h */,
-				2111203C1E81CADC00E7DC29 /* MZSelectorView.h */,
-				2111203D1E81CADC00E7DC29 /* MZSelectorView.m */,
-				21107FCA1E942B420075FF65 /* MZSelectorViewController.h */,
-				21107FCB1E942B420075FF65 /* MZSelectorViewController.m */,
+				214525381EA25C3D00FEDACD /* MZScrollInfo.h */,
+				214525391EA25C3D00FEDACD /* MZScrollInfo.m */,
+				2145253A1EA25C3D00FEDACD /* MZSelectorView_p.h */,
+				2145253B1EA25C3D00FEDACD /* MZSelectorView.h */,
+				2145253C1EA25C3D00FEDACD /* MZSelectorView.m */,
+				2145253D1EA25C3D00FEDACD /* MZSelectorViewController.h */,
+				2145253E1EA25C3D00FEDACD /* MZSelectorViewController.m */,
 			);
 			name = Selector;
 			sourceTree = "<group>";
@@ -225,11 +223,11 @@
 		211120401E81CADF00E7DC29 /* Item */ = {
 			isa = PBXGroup;
 			children = (
-				213C17A51E8EE7AF00C92275 /* MZSelectorItem.h */,
-				213C17A61E8EE7AF00C92275 /* MZSelectorItem.m */,
-				211120411E81CAE900E7DC29 /* MZSelectorViewItem_p.h */,
-				211120421E81CAE900E7DC29 /* MZSelectorViewItem.h */,
-				211120431E81CAE900E7DC29 /* MZSelectorViewItem.m */,
+				2145254F1EA25C7300FEDACD /* MZSelectorItem.h */,
+				214525501EA25C7300FEDACD /* MZSelectorItem.m */,
+				214525511EA25C7300FEDACD /* MZSelectorViewItem_p.h */,
+				214525521EA25C7300FEDACD /* MZSelectorViewItem.h */,
+				214525531EA25C7300FEDACD /* MZSelectorViewItem.m */,
 			);
 			name = Item;
 			sourceTree = "<group>";
@@ -237,15 +235,25 @@
 		2111204E1E85DB0300E7DC29 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
-				211120571E87BA3F00E7DC29 /* MZSelectorViewHandlerController.h */,
-				211120561E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m */,
-				211120551E85E82100E7DC29 /* MZSelectorViewHandlers.h */,
-				211120511E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.h */,
-				211120521E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m */,
-				2111204F1E85DE7000E7DC29 /* MZSelectorViewActivationHandler.h */,
-				211120501E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m */,
+				214525451EA25C5D00FEDACD /* MZSelectorViewActivationHandler.h */,
+				214525461EA25C5D00FEDACD /* MZSelectorViewActivationHandler.m */,
+				214525471EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.h */,
+				214525481EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.m */,
+				214525491EA25C5D00FEDACD /* MZSelectorViewHandlerController.h */,
+				2145254A1EA25C5D00FEDACD /* MZSelectorViewHandlerController.m */,
+				2145254B1EA25C5D00FEDACD /* MZSelectorViewHandlers.h */,
 			);
 			name = Handlers;
+			sourceTree = "<group>";
+		};
+		214525311EA25C0E00FEDACD /* SelectorView */ = {
+			isa = PBXGroup;
+			children = (
+				211120311E81CAC100E7DC29 /* Support */,
+				211120381E81CAD200E7DC29 /* Selector */,
+				211120401E81CADF00E7DC29 /* Item */,
+			);
+			name = SelectorView;
 			sourceTree = "<group>";
 		};
 		3DE98542DAC0A7DC635BC2E5 /* Frameworks */ = {
@@ -452,20 +460,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2111203F1E81CADC00E7DC29 /* MZSelectorView.m in Sources */,
-				211120441E81CAE900E7DC29 /* MZSelectorViewItem.m in Sources */,
+				214525551EA25C7300FEDACD /* MZSelectorViewItem.m in Sources */,
+				214525371EA25C2E00FEDACD /* CALayer+Anchor.m in Sources */,
 				211120001E81C96900E7DC29 /* AppDelegate.m in Sources */,
-				211120541E85DE7000E7DC29 /* MZSelectorViewDefaultHandler.m in Sources */,
+				2145254C1EA25C5D00FEDACD /* MZSelectorViewActivationHandler.m in Sources */,
+				214525361EA25C2E00FEDACD /* UIView+UserInteraction.m in Sources */,
 				211120301E81CA8800E7DC29 /* MZSelectorViewControllerExample.m in Sources */,
-				211120361E81CACD00E7DC29 /* CALayer+Anchor.m in Sources */,
-				21107FCC1E942B420075FF65 /* MZSelectorViewController.m in Sources */,
-				2111203E1E81CADC00E7DC29 /* MZScrollInfo.m in Sources */,
-				213C17A71E8EE7AF00C92275 /* MZSelectorItem.m in Sources */,
-				211120581E87BA3F00E7DC29 /* MZSelectorViewHandlerController.m in Sources */,
-				21075F441E89974000ECA251 /* MZSelectorViewReusableViewItemHandler.m in Sources */,
+				214525541EA25C7300FEDACD /* MZSelectorItem.m in Sources */,
+				2145254E1EA25C5D00FEDACD /* MZSelectorViewHandlerController.m in Sources */,
+				214525411EA25C3D00FEDACD /* MZSelectorViewController.m in Sources */,
+				2145253F1EA25C3D00FEDACD /* MZScrollInfo.m in Sources */,
+				214525441EA25C5100FEDACD /* MZSelectorViewReusableViewItemHandler.m in Sources */,
 				21111FFD1E81C96900E7DC29 /* main.m in Sources */,
-				211120531E85DE7000E7DC29 /* MZSelectorViewActivationHandler.m in Sources */,
-				211120371E81CACD00E7DC29 /* UIView+UserInteraction.m in Sources */,
+				214525401EA25C3D00FEDACD /* MZSelectorView.m in Sources */,
+				2145254D1EA25C5D00FEDACD /* MZSelectorViewDefaultHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
